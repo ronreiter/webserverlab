@@ -5,6 +5,7 @@ import java.util.Map;
 
 public class FileRequestHandler implements RequestHandler {
 	public Map<String,String> contentTypes;
+	public static final String DEFAULT_CONTENT_TYPE = "application/octet-stream";
 	
 	public FileRequestHandler() {
 		contentTypes = new HashMap<String,String>();
