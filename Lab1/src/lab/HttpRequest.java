@@ -27,10 +27,6 @@ public class HttpRequest {
 		private static final long serialVersionUID = 1L;
 	};
 		
-	private static void HandlePath(String requestPath)
-	{
-		
-	}
 	public static HttpRequest parse(InputStream data) throws IOException {
 		
 		HttpRequest newInstance = new HttpRequest();
@@ -66,6 +62,9 @@ public class HttpRequest {
 		
 		//Handle Path
 		
+		//BUGBUG: MUST FIX:
+		newInstance.path = requestPathParams[0];
+		
 		//Handle Params
 		if (requestPathParams.length == 2)
 		{
@@ -83,29 +82,29 @@ public class HttpRequest {
 		//Handle Headers
 		requestLine = reader.readLine();
 		newInstance.headers = null;
-		
+		/*
 		while (requestLine != "")
-			
-			
+		{}
+			*/
 			// TODO: parse body if needed (POST and content-length)
 		
-		return null;
+		return newInstance;
 	}
 	
-	public String getType() {
-		return "GET";
+	public String getMethod() {
+		return this.method;
 	}
 	
 	public String getVersion() {
-		return "HTTP/1.0";
+		return this.version;
 	}
 	
 	public String getHost() {
-		return "www.example.com";
+		return this.host;
 	}
 	
 	public String getPath() {
-		return "/";
+		return this.path;
 	}
 	
 	public String getRequestBody() {

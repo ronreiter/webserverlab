@@ -51,9 +51,9 @@ public class ConfigManager {
             try {
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    String[] iniLine = line.split("=", 1);
+                    String[] iniLine = line.split("=");
                     if (iniLine.length != 2) {
-                        throw new RuntimeException("Error parsing ini file on line: " + iniLine);
+                        throw new RuntimeException("Error parsing ini file on line: " + line);
                     }
 
                     configuration.put(iniLine[0], iniLine[1]);
