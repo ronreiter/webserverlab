@@ -19,7 +19,9 @@ public class RequestRouter {
 		String path = request.getPath();
 		
 		for (Route route : routes) {
-			if (request.getHost() == route.domain && path.matches(route.regexp)) {
+			if (
+                    route.domain != null && request.getHost().equals(route.domain) && path.matches(route.regexp) ||
+                    route.domain == null && path.matches(route.regexp)) {
 				return route.handler.handleRequest(request);				
 			}
 		}
