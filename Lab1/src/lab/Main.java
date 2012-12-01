@@ -9,7 +9,8 @@ public class Main {
             Logger.info("Starting server...");
             server.start();
         } catch (IOException e) {
-            Logger.critical("Error starting server! Exception: " + e.getStackTrace());
+            Logger.critical("Error starting server! Exception: " + e.getMessage());
+            e.printStackTrace();
         }
 
     }

@@ -3,24 +3,31 @@ package lab;
 import org.omg.CORBA.StringHolder;
 
 import java.io.*;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ConfigManager {
     public static String CONFIG_FILE = "config.ini";
-	public static String PORT_KEY = "port";
-	public static String ROOT_DIRECTORY_KEY = "root";
-	public static String DEFAULT_PAGE_KEY = "defaultPage";
-	public static String SITES_ROOT_DIRECTORY_KEY = "sitesRoot";
-	public static String MAX_THREADS_KEY = "maxThreads";
-	public static String FILE_DEBUG_LEVEL_KEY = "fileDebugLevel";
-	public static String SCREEN_DEBUG_LEVEL_KEY = "screenDebugLevel";
 
-	public static int DEFAULT_PORT_VALUE = 80;
-	public static String DEFAULT_ROOT_DIRECTORY_VALUE = "root";
-	public static String DEFAULT_DEFAULT_PAGE_VALUE = "defaultPage";
-	public static String DEFAULT_SITES_ROOT_DIRECTORY_VALUE = "sites";
-	public static int DEFAULT_MAX_THREADS_VALUE = 10;
-	public static int DEFAULT_FILE_DEBUG_LEVEL_VALUE = Logger.LOG_LEVEL_DEBUG;
+	public static String PORT_KEY = "port";
+    public static int DEFAULT_PORT_VALUE = 8080;
+
+    public static String ROOT_DIRECTORY_KEY = "root";
+    public static String DEFAULT_ROOT_DIRECTORY_VALUE = "root";
+
+    public static String DEFAULT_PAGE_KEY = "defaultPage";
+    public static String DEFAULT_DEFAULT_PAGE_VALUE = "defaultPage";
+
+    public static String SITES_ROOT_DIRECTORY_KEY = "sitesRoot";
+    public static String DEFAULT_SITES_ROOT_DIRECTORY_VALUE = "sites";
+
+    public static String MAX_THREADS_KEY = "maxThreads";
+    public static int DEFAULT_MAX_THREADS_VALUE = 10;
+
+    public static String FILE_DEBUG_LEVEL_KEY = "fileDebugLevel";
+    public static int DEFAULT_FILE_DEBUG_LEVEL_VALUE = Logger.LOG_LEVEL_DEBUG;
+
+    public static String SCREEN_DEBUG_LEVEL_KEY = "screenDebugLevel";
 	public static int DEFAULT_SCREEN_DEBUG_LEVEL_VALUE = Logger.LOG_LEVEL_DEBUG;
 
     private static ConfigManager manager;
@@ -28,6 +35,8 @@ public class ConfigManager {
     private File configFile;
 
     public ConfigManager() {
+        configuration = new HashMap<String, String>();
+
         configFile = new File(CONFIG_FILE);
         if (configFile.exists()) {
             BufferedReader reader;
@@ -61,7 +70,7 @@ public class ConfigManager {
         } else {
             configuration.put(PORT_KEY, Integer.toString(DEFAULT_PORT_VALUE));
             configuration.put(ROOT_DIRECTORY_KEY, DEFAULT_ROOT_DIRECTORY_VALUE);
-            configuration.put(DEFAULT_PAGE_KEY, DEFAULT_PAGE_KEY);
+            configuration.put(DEFAULT_PAGE_KEY, DEFAULT_DEFAULT_PAGE_VALUE);
             configuration.put(SITES_ROOT_DIRECTORY_KEY, DEFAULT_SITES_ROOT_DIRECTORY_VALUE);
             configuration.put(MAX_THREADS_KEY, Integer.toString(DEFAULT_MAX_THREADS_VALUE));
             configuration.put(FILE_DEBUG_LEVEL_KEY, Integer.toString(DEFAULT_FILE_DEBUG_LEVEL_VALUE));
