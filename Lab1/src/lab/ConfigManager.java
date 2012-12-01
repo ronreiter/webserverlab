@@ -75,6 +75,8 @@ public class ConfigManager {
             configuration.put(MAX_THREADS_KEY, Integer.toString(DEFAULT_MAX_THREADS_VALUE));
             configuration.put(FILE_DEBUG_LEVEL_KEY, Integer.toString(DEFAULT_FILE_DEBUG_LEVEL_VALUE));
             configuration.put(SCREEN_DEBUG_LEVEL_KEY, Integer.toString(DEFAULT_SCREEN_DEBUG_LEVEL_VALUE));
+
+            saveConfiguration();
         }
     }
 
@@ -85,6 +87,8 @@ public class ConfigManager {
             for (String key : configuration.keySet()) {
                 out.println(key + "=" + configuration.get(key));
             }
+
+            out.close();
 
         } catch (IOException e) {
             Logger.error("Error Writing configuration file! " + e.getStackTrace());
