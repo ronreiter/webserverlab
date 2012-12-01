@@ -6,28 +6,33 @@ import java.util.* ;
 final class ConnectionHandler implements Runnable
 {
     final static String CRLF = "\r\n";
-    Socket socket;
+    ConnectionPool parent;
     
     // Constructor
-    public ConnectionHandler(Socket socket) throws Exception
+    public ConnectionHandler(ConnectionPool parent)
 	{
-		this.socket = socket;
+        this.parent = parent;
     }
     
     // Implement the run() method of the Runnable interface.
     public void run()
 	{
-		try
-		{
-		    processRequest();
-		}
-		catch (Exception e)
-		{
-		    System.out.println(e);
-		}
+        while (true) {
+            try {
+                Socket socket = parent.dequeue();
+                processRequest(socket);
+
+            } catch (InterruptedException e) {
+                Logger.error("Thread interrupted. Stopping");
+                break;
+            } catch (Exception e) {
+                Logger.error("Got exception while handling user connection");
+                e.printStackTrace();
+            }
+        }
 	}
 
-	private void processRequest() throws Exception
+	private void processRequest(Socket socket) throws Exception
 	{
 		DataOutputStream os = new DataOutputStream(socket.getOutputStream());
 		//Get the source IP

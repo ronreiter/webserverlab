@@ -6,19 +6,24 @@ import java.util.* ;
 public final class WebServer
 {
 
-	public static void start() throws Exception
+	public void start() throws IOException
 	{
-		int port = 8080;
+		int port = ConfigManager.getInstance().getPort();
 		
 		// Establish the listen socket.
 		ServerSocket socket = new ServerSocket(port);
+
+        ConnectionPool pool = new ConnectionPool();
+        pool.start();
 		
 		// Process HTTP service requests in an infinite loop.
 		while (true)
 		{
 		    // Listen for a TCP connection request.
 		    Socket connection = socket.accept();
-		    
+
+
+
 		    // Construct an object to process the HTTP request message.
 		    ConnectionHandler request = new ConnectionHandler(connection);
 		    
@@ -30,7 +35,7 @@ public final class WebServer
 		}
     }
 	
-	public static void stop() {
+	public void stop() {
 		
 	}
 }
