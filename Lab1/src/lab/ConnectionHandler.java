@@ -1,14 +1,15 @@
+package lab;
 import java.io.* ;
 import java.net.* ;
 import java.util.* ;
 
-final class HttpRequest implements Runnable
+final class ConnectionHandler implements Runnable
 {
     final static String CRLF = "\r\n";
     Socket socket;
     
     // Constructor
-    public HttpRequest(Socket socket) throws Exception
+    public ConnectionHandler(Socket socket) throws Exception
 	{
 		this.socket = socket;
     }

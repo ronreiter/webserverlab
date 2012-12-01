@@ -1,3 +1,4 @@
+package lab;
 import java.io.* ;
 import java.net.* ;
 import java.util.* ;
@@ -5,7 +6,7 @@ import java.util.* ;
 public final class WebServer
 {
 
-	public static void main(String argv[]) throws Exception
+	public static void start() throws Exception
 	{
 		int port = 8080;
 		
@@ -19,7 +20,7 @@ public final class WebServer
 		    Socket connection = socket.accept();
 		    
 		    // Construct an object to process the HTTP request message.
-		    HttpRequest request = new HttpRequest(connection);
+		    ConnectionHandler request = new ConnectionHandler(connection);
 		    
 		    // Create a new thread to process the request.
 		    Thread thread = new Thread(request);
@@ -28,6 +29,10 @@ public final class WebServer
 		    thread.start();
 		}
     }
+	
+	public static void stop() {
+		
+	}
 }
 
 
