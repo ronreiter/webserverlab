@@ -1,10 +1,30 @@
 package lab;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Map;
 
 public class HttpRequest {
-	public static HttpRequest parse(InputStream data) {
+	String type;
+	String version;
+	String host;
+	String path;
+	String body;
+	Map<String,String> headers;
+	Map<String,String> parameters;
+	
+	public static HttpRequest parse(InputStream data) throws IOException {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(data));
+		String requestLine = reader.readLine();
+		
+		// TODO: parse GET /path?a=1&b=2 HTTP/1.l
+		
+		// TODO: parse headers
+		
+		// TODO: parse body if needed (POST and content-length)
+		
 		return null;
 	}
 	
