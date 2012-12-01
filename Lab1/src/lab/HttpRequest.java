@@ -1,6 +1,7 @@
 package lab;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -30,6 +31,7 @@ public class HttpRequest {
 	public static HttpRequest parse(InputStream data) throws IOException {
 		
 		HttpRequest newInstance = new HttpRequest();
+		ConfigManager cfgMgr = ConfigManager.getInstance();
 		
 		BufferedReader reader = new BufferedReader(new InputStreamReader(data));
 		
@@ -60,9 +62,7 @@ public class HttpRequest {
 		String [] requestPathParams = requestParts[1].split("?");
 		if (requestPathParams.length == 0 || requestPathParams.length > 2) throw new RuntimeException("Bad Request - Path/Params error");
 		
-		//Handle Path
-		
-		//BUGBUG: MUST FIX:
+		//Updated path		
 		newInstance.path = requestPathParams[0];
 		
 		//Handle Params
@@ -82,10 +82,8 @@ public class HttpRequest {
 		//Handle Headers
 		requestLine = reader.readLine();
 		newInstance.headers = null;
-		/*
-		while (requestLine != "")
-		{}
-			*/
+		
+		//while (requestLine != "") {}
 			// TODO: parse body if needed (POST and content-length)
 		
 		return newInstance;
