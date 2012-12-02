@@ -38,10 +38,18 @@ public class HttpResponse {
         }
     }
 
+    public String getHeader(String headerName) {
+        return headers.get(headerName);
+    }
+
 	public void setHeader(String headerName, String headerValue) {
 		headers.put(headerName, headerValue);
 	}
-	
+
+    public String getBody(String body) {
+        return this.body;
+    }
+
 	public void setBody(String body) {
 		this.body = body;
 	}
@@ -49,15 +57,27 @@ public class HttpResponse {
     public void setStreamBody(InputStream streamBody) {
         this.streamBody = streamBody;
     }
-	
+
+    public String getMethod() {
+        return this.method;
+    }
+
 	public void setMethod(String method) {
 		this.method = method;
 	}
-	
+
+    public String getVersion() {
+        return this.version;
+    }
+
 	public void setVersion(String version) {
 		this.version = version;
 	}
-	
+
+    public int getStatus() {
+        return this.status;
+    }
+
 	public void setStatus(int status) {
 		this.status = status;
 	}

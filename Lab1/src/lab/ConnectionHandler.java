@@ -2,6 +2,7 @@ package lab;
 import java.io.* ;
 import java.net.* ;
 import java.util.* ;
+import java.util.logging.LoggingMXBean;
 
 final class ConnectionHandler implements Runnable
 {
@@ -36,11 +37,18 @@ final class ConnectionHandler implements Runnable
 
 	private void processRequest(Socket socket) throws Exception
 	{
-        HttpRequest request = HttpRequest.parse(socket.getInputStream());
-        HttpResponse response = router.handleRequest(request);
-        response.serialize(socket.getOutputStream());
+        while (true) {
+            HttpRequest request = HttpRequest.parse(socket.getInputStream());
+            HttpResponse response = router.handleRequest(request);
+            Logger.info(request.getMethod() + " " + request.getPath() + " " + response.getStatus());
+            response.serialize(socket.getOutputStream());
 
-        // TODO: support connection keep alive
+            // check for connection: keep-alive
+            if (!(request.getHeaders().containsKey("connection") && request.getHeaders().get("connection").equals("keep-alive"))) {
+                break;
+            }
+        }
+
 		socket.close();
     }
 

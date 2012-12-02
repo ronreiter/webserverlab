@@ -38,39 +38,57 @@ public class HttpRequest {
     }
 		
 	public static HttpRequest parse(InputStream data) throws IOException {
-		
 		HttpRequest newInstance = new HttpRequest();
-		ConfigManager cfgMgr = ConfigManager.getInstance();
-		
+
 		BufferedReader reader = new BufferedReader(new InputStreamReader(data));
-		
-		
+
 		//Handle the METHOD line
 		String requestLine = reader.readLine();
 
-		if (requestLine == null) throw new RuntimeException("Bad Request - zero length");
+		if (requestLine == null) {
+            throw new RuntimeException("Bad request - zero length");
+        }
 		
 		//Verify format Integrity: "METHOD PATH&PARAM HTTP\VER\r\n" 
 		String[] requestParts = requestLine.split(" ");
-		if (requestParts.length != 3) throw new RuntimeException("Bad Request - bad format");
+		if (requestParts.length != 3) {
+            throw new RuntimeException("Bad request - bad format");
+        }
 		
 		// Handle the version portion (HTTP/1.X)
 		String [] HTTPVerList = requestParts[2].split("/");
-		if (HTTPVerList.length != 2) throw new RuntimeException("Bad Request - version format error");
-		if (!HTTPVerList[0].equals("HTTP")) throw new RuntimeException("Bad Request - version format error - NOT HTTP");
-		if (HTTPVerList[1].equals("1.0") || HTTPVerList[1].equals("1.1")) newInstance.version = HTTPVerList[1];
-		else throw new RuntimeException("Bad Request - version - version: " + HTTPVerList[1] + " Not supported");
+		if (HTTPVerList.length != 2) {
+            throw new RuntimeException("Bad request - version format error");
+        }
+
+		if (!HTTPVerList[0].equals("HTTP")) {
+            throw new RuntimeException("Bad request - version format error - NOT HTTP");
+        }
+
+		if (HTTPVerList[1].equals("1.0") || HTTPVerList[1].equals("1.1")) {
+            newInstance.version = HTTPVerList[1];
+        } else {
+            throw new RuntimeException("Bad request - version - version: " + HTTPVerList[1] + " not supported");
+        }
 
 		// Handle the method portion (GET/TRACE/POST..)
-		if (requestParts[0].equals(GET_METHOD)) newInstance.method = GET_METHOD;
-		else if (requestParts[0].equals(POST_METHOD)) newInstance.method = POST_METHOD;
-		else if (requestParts[0].equals(TRACE_METHOD)) newInstance.method = TRACE_METHOD;
-		else if (requestParts[0].equals(HEAD_METHOD)) newInstance.method = HEAD_METHOD;
-		else throw new RuntimeException("Bad Request - Method not supported"); 
-	
+		if (requestParts[0].equals(GET_METHOD)) {
+            newInstance.method = GET_METHOD;
+        } else if (requestParts[0].equals(POST_METHOD)) {
+            newInstance.method = POST_METHOD;
+        } else if (requestParts[0].equals(TRACE_METHOD)) {
+            newInstance.method = TRACE_METHOD;
+        } else if (requestParts[0].equals(HEAD_METHOD)) {
+            newInstance.method = HEAD_METHOD;
+        } else {
+            throw new RuntimeException("Bad request - method not supported");
+        }
+
 		// Handle the path portion
 		String [] requestPathParams = requestParts[1].split("\\?");
-		if (requestPathParams.length == 0 || requestPathParams.length > 2) throw new RuntimeException("Bad Request - Path/Params error");
+		if (requestPathParams.length == 0 || requestPathParams.length > 2) {
+            throw new RuntimeException("Bad request - path/params error");
+        }
 		
 		//Updated path		
 		newInstance.path = requestPathParams[0];
@@ -82,13 +100,12 @@ public class HttpRequest {
 			for (String s : requestParams)
 			{
 				String [] varValue = s.split("=");
-				if (varValue.length != 2) throw new RuntimeException("Ba Request - Bad METHOD parameters format: " + s);
+				if (varValue.length != 2) throw new RuntimeException("Bad request - Bad method parameters format: " + s);
 				newInstance.parameters.put(varValue[0], varValue[1]);
 			}
 		} 
 		else newInstance.parameters = null;
-		
-		
+
 		//Handle Headers
 		requestLine = reader.readLine();
 
@@ -104,10 +121,10 @@ public class HttpRequest {
 		{
 			int contentLength = Integer.valueOf(newInstance.headers.get(CONTENT_LENGTH_HEADER).toString());
 			
-			if (newInstance.method == POST_METHOD)
+			if (newInstance.method.equals(POST_METHOD))
 			{
 				requestLine = reader.readLine();
-				while (requestLine != "" && contentLength > 0) 
+				while (!requestLine.equals("") && contentLength > 0)
 				{
 					newInstance.body += requestLine;
 					contentLength -= requestLine.length() + 2;
@@ -147,22 +164,14 @@ public class HttpRequest {
 	}
 	
 	public String getRequestBody() {
-		return null;
+		return this.body;
 	}
 
 	public Map<String,String> getHeaders() {
-		return null;
+		return headers;
 	}
 	
 	public Map<String,String> getParamters() {
-		return null;
-	}
-	
-	public Map<String,String> getGETParamters() {
-		return null;
-	}
-	
-	public Map<String,String> getPOSTParamters() {
-		return null;
+		return parameters;
 	}
 }
