@@ -1,6 +1,7 @@
 package lab;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,6 +12,8 @@ public class HttpRequest {
 	private static String GET_METHOD = "GET";
 	private static String POST_METHOD = "POST";
 	private static String TRACE_METHOD = "TRACE";
+	private static String HEAD_METHOD = "HEAD";
+	private static String CONTENT_LENGTH_HEADER = "content-length";
 	String method;
 	String version;
 	String host;
@@ -56,6 +59,7 @@ public class HttpRequest {
 		if (requestParts[0] == GET_METHOD) newInstance.method = GET_METHOD;		
 		else if (requestParts[0] == POST_METHOD) newInstance.method = POST_METHOD;
 		else if (requestParts[0] == TRACE_METHOD) newInstance.method = TRACE_METHOD;
+		else if (requestParts[0] == HEAD_METHOD) newInstance.method = HEAD_METHOD;
 		else throw new RuntimeException("Bad Request - Method not supported"); 
 	
 		// Handle the path portion
@@ -72,7 +76,7 @@ public class HttpRequest {
 			for (String s : requestParams)
 			{
 				String [] varValue = s.split("=");
-				if (varValue.length != 2) throw new RuntimeException("Ba Request - Bad parameters format: " + s);
+				if (varValue.length != 2) throw new RuntimeException("Ba Request - Bad METHOD parameters format: " + s);
 				newInstance.parameters.put(varValue[0], varValue[1]);
 			}
 		} 
@@ -83,9 +87,41 @@ public class HttpRequest {
 		requestLine = reader.readLine();
 		newInstance.headers = null;
 		
-		//while (requestLine != "") {}
-			// TODO: parse body if needed (POST and content-length)
+		while (requestLine != "") 
+		{
+			String [] headerKey = requestLine.split(":",2);
+			if (headerKey.length != 2) throw new RuntimeException("Bad Request - bad headers: " + requestLine);
+			newInstance.headers.put(headerKey[0].toLowerCase(), headerKey[1]);
+			requestLine = reader.readLine();
+		}
 		
+		if (newInstance.headers.containsKey(CONTENT_LENGTH_HEADER))
+		{
+			int contentLength = Integer.valueOf(newInstance.headers.get(CONTENT_LENGTH_HEADER).toString());
+			
+			if (newInstance.method == POST_METHOD)
+			{
+				requestLine = reader.readLine();
+				while (requestLine != "" && contentLength > 0) 
+				{
+					newInstance.body += requestLine;
+					contentLength -= requestLine.length() + 2;
+					
+					String [] varValue = requestLine.split("=");
+					if (varValue.length != 2) throw new RuntimeException("Ba Request - Bad BODY parameters format: " + requestLine);
+					newInstance.parameters.put(varValue[0], varValue[1]);
+					requestLine = reader.readLine();
+				}
+			} else {
+				
+				byte [] byteArray = new byte[contentLength];
+				
+				data.read(byteArray);
+				newInstance.body = byteArray.toString();
+			}
+		
+		}
+				
 		return newInstance;
 	}
 	
