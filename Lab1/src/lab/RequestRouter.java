@@ -1,9 +1,16 @@
 package lab;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RequestRouter {	
 	public class Route {
+        public Route(String regexp, String domain, RequestHandler handler) {
+            this.regexp = regexp;
+            this.domain = domain;
+            this.handler = handler;
+        }
+
 		String domain;
 		String regexp;
 		RequestHandler handler;
@@ -12,7 +19,10 @@ public class RequestRouter {
 	private List<Route> routes;
 	
 	public RequestRouter() {
-		
+        routes = new ArrayList<Route>();
+
+        // TODO: routes.add(new Route(".*", null, FileRequestHandler));
+		routes.add(new Route(".*", null, new FileRequestHandler()));
 	}
 	
 	public HttpResponse handleRequest(HttpRequest request) {

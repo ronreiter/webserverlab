@@ -16,7 +16,7 @@ public class ConfigManager {
     public static String DEFAULT_ROOT_DIRECTORY_VALUE = "root";
 
     public static String DEFAULT_PAGE_KEY = "defaultPage";
-    public static String DEFAULT_DEFAULT_PAGE_VALUE = "defaultPage";
+    public static String DEFAULT_DEFAULT_PAGE_VALUE = "index.html";
 
     public static String SITES_ROOT_DIRECTORY_KEY = "sitesRoot";
     public static String DEFAULT_SITES_ROOT_DIRECTORY_VALUE = "sites";

@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.Map;
 
 public class HttpRequest {
@@ -30,6 +31,11 @@ public class HttpRequest {
 		 */
 		private static final long serialVersionUID = 1L;
 	};
+
+    public HttpRequest() {
+        headers = new HashMap<String, String>();
+        parameters = new HashMap<String, String>();
+    }
 		
 	public static HttpRequest parse(InputStream data) throws IOException {
 		
@@ -49,21 +55,21 @@ public class HttpRequest {
 		if (requestParts.length != 3) throw new RuntimeException("Bad Request - bad format");
 		
 		// Handle the version portion (HTTP/1.X)
-		String [] HTTPVerList = requestParts[2].split("//");
+		String [] HTTPVerList = requestParts[2].split("/");
 		if (HTTPVerList.length != 2) throw new RuntimeException("Bad Request - version format error");
-		if (HTTPVerList[0] != "HTTP") throw new RuntimeException("Bad Request - version format error - NOT HTTP");
-		if (HTTPVerList[1] == "1.0" ||  HTTPVerList[1] == "1.1") newInstance.version = HTTPVerList[1]; 
+		if (!HTTPVerList[0].equals("HTTP")) throw new RuntimeException("Bad Request - version format error - NOT HTTP");
+		if (HTTPVerList[1].equals("1.0") || HTTPVerList[1].equals("1.1")) newInstance.version = HTTPVerList[1];
 		else throw new RuntimeException("Bad Request - version - version: " + HTTPVerList[1] + " Not supported");
 
 		// Handle the method portion (GET/TRACE/POST..)
-		if (requestParts[0] == GET_METHOD) newInstance.method = GET_METHOD;		
-		else if (requestParts[0] == POST_METHOD) newInstance.method = POST_METHOD;
-		else if (requestParts[0] == TRACE_METHOD) newInstance.method = TRACE_METHOD;
-		else if (requestParts[0] == HEAD_METHOD) newInstance.method = HEAD_METHOD;
+		if (requestParts[0].equals(GET_METHOD)) newInstance.method = GET_METHOD;
+		else if (requestParts[0].equals(POST_METHOD)) newInstance.method = POST_METHOD;
+		else if (requestParts[0].equals(TRACE_METHOD)) newInstance.method = TRACE_METHOD;
+		else if (requestParts[0].equals(HEAD_METHOD)) newInstance.method = HEAD_METHOD;
 		else throw new RuntimeException("Bad Request - Method not supported"); 
 	
 		// Handle the path portion
-		String [] requestPathParams = requestParts[1].split("?");
+		String [] requestPathParams = requestParts[1].split("\\?");
 		if (requestPathParams.length == 0 || requestPathParams.length > 2) throw new RuntimeException("Bad Request - Path/Params error");
 		
 		//Updated path		
@@ -85,9 +91,8 @@ public class HttpRequest {
 		
 		//Handle Headers
 		requestLine = reader.readLine();
-		newInstance.headers = null;
-		
-		while (requestLine != "") 
+
+		while (!requestLine.equals(""))
 		{
 			String [] headerKey = requestLine.split(":",2);
 			if (headerKey.length != 2) throw new RuntimeException("Bad Request - bad headers: " + requestLine);

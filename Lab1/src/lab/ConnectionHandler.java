@@ -7,11 +7,13 @@ final class ConnectionHandler implements Runnable
 {
     final static String CRLF = "\r\n";
     ConnectionPool parent;
+    RequestRouter router;
     
     // Constructor
     public ConnectionHandler(ConnectionPool parent)
 	{
         this.parent = parent;
+        this.router = new RequestRouter();
     }
     
     // Implement the run() method of the Runnable interface.
@@ -34,36 +36,11 @@ final class ConnectionHandler implements Runnable
 
 	private void processRequest(Socket socket) throws Exception
 	{
-		DataOutputStream os = new DataOutputStream(socket.getOutputStream());
-		//Get the source IP
-		String sourceIP = socket.getInetAddress().getHostAddress();
-		
-		// Construct the response message.
-		String statusLine = "HTTP/1.0 200 OK" + CRLF;
-		String contentTypeLine = "Content-Type: text/html" + CRLF;
-		String contentLength = "Content-Length: ";
-		
-		String entityBody = "<HTML>" + 
-		"<HEAD><TITLE>"+ sourceIP +"</TITLE></HEAD>" +
-		"<BODY><H1>"+ sourceIP +"</H1></BODY></HTML>";
-		
-		// Send the status line.
-		os.writeBytes(statusLine);
-		
-		// Send the content type line.
-		os.writeBytes(contentTypeLine);
-		
-		// Send content length.
-		os.writeBytes(contentLength + entityBody.length() + CRLF);
-		
-		// Send a blank line to indicate the end of the header lines.
-		os.writeBytes(CRLF);
-		
-		// Send the content of the HTTP.
-		os.writeBytes(entityBody) ;
-		
-		// Close streams and socket.
-		os.close();
+        HttpRequest request = HttpRequest.parse(socket.getInputStream());
+        HttpResponse response = router.handleRequest(request);
+        response.serialize(socket.getOutputStream());
+
+        // TODO: support connection keep alive
 		socket.close();
     }
 

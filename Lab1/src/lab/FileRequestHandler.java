@@ -31,14 +31,21 @@ public class FileRequestHandler extends RequestHandler {
             serverRoot = new File(serverRoot, request.getHost());
         }
 
-        File file = new File(serverRoot, request.getPath());
+        File file;
+
+        if (request.getPath().equals("/")) {
+            file = new File(serverRoot, ConfigManager.getInstance().getDefaultPage());
+        } else {
+            file = new File(serverRoot, request.getPath());
+        }
+
 
         if (!file.exists()) {
             this.response.setStatus(404);
             return;
         }
 
-        this.response.setChunkedTransferEncoding(true);
+        // this.response.setChunkedTransferEncoding(true);
 
         try {
             this.response.setStreamBody(new FileInputStream(file));
