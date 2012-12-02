@@ -12,7 +12,9 @@ public final class WebServer
 		int port = ConfigManager.getInstance().getPort();
 		
 		// Establish the listen socket.
-		ServerSocket socket = new ServerSocket(port);
+		//ServerSocket socket = new ServerSocket(port);
+        Logger.info("Listening on port " + port + "...");
+        ServerSocket socket = new ServerSocket(port);
 
         pool = new ConnectionPool();
         pool.start();
