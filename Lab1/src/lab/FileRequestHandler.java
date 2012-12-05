@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.LoggingMXBean;
 
 public class FileRequestHandler extends RequestHandler {
 	public Map<String,String> contentTypes;
@@ -39,19 +40,31 @@ public class FileRequestHandler extends RequestHandler {
             file = new File(serverRoot, request.getPath());
         }
 
-
-        if (!file.exists()) {
+        // check that the file is in the server root
+        if (!file.getAbsolutePath().startsWith(serverRoot.getAbsolutePath())) {
+            Logger.error("Attempted to read a file which is out of the serer root! File: " + file.getAbsolutePath());
             this.response.setStatus(404);
             return;
         }
 
-        // this.response.setChunkedTransferEncoding(true);
+        if (!file.exists()) {
+            Logger.debug("File doesn't exist! File: " + file.getAbsolutePath());
+            this.response.setStatus(404);
+            return;
+        }
+
+        if (request.getHeaders().containsKey("chunked") && request.getHeaders().get("chunked").toLowerCase().equals("yes")) {
+            Logger.debug("Setting chunked transfer encoding");
+            this.response.setChunkedTransferEncoding(true);
+        }
 
         try {
+            this.response.setHeader("content-type", contentTypes.get(file.getName().substring(file.getName().lastIndexOf('.')+1)));
             this.response.setStreamBody(new FileInputStream(file));
 
         } catch (FileNotFoundException e) {
             Logger.error("File not found - " + file.getAbsolutePath());
+            this.response.setStatus(500);
             e.printStackTrace();
         }
 

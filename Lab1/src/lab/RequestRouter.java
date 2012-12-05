@@ -22,12 +22,13 @@ public class RequestRouter {
         routes = new ArrayList<Route>();
 
         // TODO: routes.add(new Route(".*", null, FileRequestHandler));
-		routes.add(new Route(".*", null, new FileRequestHandler()));
+        // TODO: handle paramsinfo?
+        routes.add(new Route(".*", null, new FileRequestHandler()));
 	}
 	
 	public HttpResponse handleRequest(HttpRequest request) {
 		String path = request.getPath();
-		
+
 		for (Route route : routes) {
 			if (
                     route.domain != null && request.getHost().equals(route.domain) && path.matches(route.regexp) ||

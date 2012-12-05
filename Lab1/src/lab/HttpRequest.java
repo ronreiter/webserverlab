@@ -25,12 +25,8 @@ public class HttpRequest {
 	
 	public class HttpRequestException extends RuntimeException
 	{
-
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 1L;
-	};
+	}
 
     public HttpRequest() {
         headers = new HashMap<String, String>();

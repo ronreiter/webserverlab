@@ -6,7 +6,6 @@ import java.util.logging.LoggingMXBean;
 
 final class ConnectionHandler implements Runnable
 {
-    final static String CRLF = "\r\n";
     ConnectionPool parent;
     RequestRouter router;
     
@@ -37,16 +36,28 @@ final class ConnectionHandler implements Runnable
 
 	private void processRequest(Socket socket) throws Exception
 	{
+        HttpRequest request;
+        HttpResponse response;
         while (true) {
-            HttpRequest request = HttpRequest.parse(socket.getInputStream());
-            HttpResponse response = router.handleRequest(request);
-            Logger.info(request.getMethod() + " " + request.getPath() + " " + response.getStatus());
-            response.serialize(socket.getOutputStream());
+            try {
+                request = HttpRequest.parse(socket.getInputStream());
+                response = router.handleRequest(request);
+                Logger.info(request.getMethod() + " " + request.getPath() + " " + response.getStatus());
+                response.serialize(socket.getOutputStream());
 
-            // check for connection: keep-alive
-            if (!(request.getHeaders().containsKey("connection") && request.getHeaders().get("connection").equals("keep-alive"))) {
-                break;
+                // check for connection: keep-alive
+                if (!(request.getHeaders().containsKey("connection") && request.getHeaders().get("connection").equals("keep-alive"))) {
+                    Logger.debug("No keep-alive, closing connection");
+                    break;
+                }
+
+            } catch (Exception e) {
+                response = new HttpResponse(500);
+                response.serialize(socket.getOutputStream());
+                socket.close();
+                return;
             }
+
         }
 
 		socket.close();
