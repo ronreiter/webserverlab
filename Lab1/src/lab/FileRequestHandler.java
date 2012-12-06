@@ -59,7 +59,11 @@ public class FileRequestHandler extends RequestHandler {
         }
 
         try {
-            this.response.setHeader("content-type", contentTypes.get(file.getName().substring(file.getName().lastIndexOf('.')+1)));
+            // get the content type according to the file extension
+            String extension = file.getName().substring(file.getName().lastIndexOf('.')+1);
+            String contentType = contentTypes.containsKey(extension) ? contentTypes.get(extension) : DEFAULT_CONTENT_TYPE;
+
+            this.response.setHeader("content-type", contentType);
             this.response.setStreamBody(new FileInputStream(file));
 
         } catch (FileNotFoundException e) {
