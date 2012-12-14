@@ -93,13 +93,7 @@ public class HttpRequest {
 		//Handle Params
 		if (requestPathParams.length == 2)
 		{
-			String [] requestParams = requestPathParams[1].split("&");
-			for (String s : requestParams)
-			{
-				String [] varValue = s.split("=");
-				if (varValue.length != 2) throw new RuntimeException("Bad request - Bad method parameters format: " + s);
-				newInstance.parameters.put(varValue[0], varValue[1]);
-			}
+			parseParams(newInstance, requestPathParams[1]);
 		} 
 		//else newInstance.parameters = null;
 
@@ -126,14 +120,9 @@ public class HttpRequest {
 				postBody.position(0);
 				
 				newInstance.body += postBody.toString();
+
+				parseParams(newInstance, postBody.toString());
 				
-				String [] requestParams = postBody.toString().split("&");
-				for (String line: requestParams)
-				{
-					String [] varValue = line.split("=");
-					if (varValue.length != 2) throw new RuntimeException("Ba Request - Bad BODY parameters format: " + requestLine);
-					newInstance.parameters.put(varValue[0], varValue[1]);
-				}
 			} else {
 				
 				byte [] byteArray = new byte[contentLength];
@@ -147,6 +136,18 @@ public class HttpRequest {
 		return newInstance;
 	}
 	
+	private static void parseParams(HttpRequest newInstance, String paramsLine)
+	{
+		//Handle Params
+			String [] requestParams = paramsLine.split("&");
+			for (String s : requestParams)
+			{
+				String [] varValue = s.split("=");
+				if (varValue.length > 2) throw new RuntimeException("Bad request - Bad method parameters format: " + s);
+				if (varValue.length == 1) newInstance.parameters.put(varValue[0], null);
+				else newInstance.parameters.put(varValue[0], varValue[1]);
+			} 
+	}
 	public String getMethod() {
 		return this.method;
 	}
