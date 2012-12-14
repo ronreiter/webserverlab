@@ -38,3 +38,7 @@
 
 	sample request: http://localhost:8080/serverConfig?pass=weakpass&multipleSites=yes
 	The sample request will enable bonus #2 :)
+
+5. Logger with 5 logging levels
+	The logger lets you log anything you wish with the relevant level (error, warning, etc). 
+	The logger will print on the screen everything over a certain log level (according to what's configured in the config.ini file as screenDebugLevel)
