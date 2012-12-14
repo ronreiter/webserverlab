@@ -11,7 +11,7 @@ public class ConfigManager {
 
 	public static String PORT_KEY = "port";
     public static int DEFAULT_PORT_VALUE = 8080;
-
+    
     public static String ROOT_DIRECTORY_KEY = "root";
     public static String DEFAULT_ROOT_DIRECTORY_VALUE = "root";
 
@@ -21,6 +21,10 @@ public class ConfigManager {
     public static String SITES_ROOT_DIRECTORY_KEY = "sitesRoot";
     public static String DEFAULT_SITES_ROOT_DIRECTORY_VALUE = "sites";
 
+	public static String MULTIPLE_SITES_SUPPORT = "multipleSites";
+    public static String DEFAULT_MULTIPLE_SITES_SUPPORT = "no";
+
+    
     public static String MAX_THREADS_KEY = "maxThreads";
     public static int DEFAULT_MAX_THREADS_VALUE = 10;
 
@@ -71,6 +75,7 @@ public class ConfigManager {
             configuration.put(PORT_KEY, Integer.toString(DEFAULT_PORT_VALUE));
             configuration.put(ROOT_DIRECTORY_KEY, DEFAULT_ROOT_DIRECTORY_VALUE);
             configuration.put(DEFAULT_PAGE_KEY, DEFAULT_DEFAULT_PAGE_VALUE);
+            configuration.put(MULTIPLE_SITES_SUPPORT, DEFAULT_MULTIPLE_SITES_SUPPORT);
             configuration.put(SITES_ROOT_DIRECTORY_KEY, DEFAULT_SITES_ROOT_DIRECTORY_VALUE);
             configuration.put(MAX_THREADS_KEY, Integer.toString(DEFAULT_MAX_THREADS_VALUE));
             configuration.put(FILE_DEBUG_LEVEL_KEY, Integer.toString(DEFAULT_FILE_DEBUG_LEVEL_VALUE));
@@ -153,6 +158,16 @@ public class ConfigManager {
 		setStringParameter(SITES_ROOT_DIRECTORY_KEY, sitesRoot);
 	}
 
+	public Boolean isMultipleSites()
+	{
+		return getStringParameter(MULTIPLE_SITES_SUPPORT).equals("yes");
+	}
+	
+	public void setIsMultipleSites(String isMultipleSites)
+	{
+		setStringParameter(MULTIPLE_SITES_SUPPORT, isMultipleSites);
+	}
+	
     public int getFileDebugLevel() {
         return getIntParameter(FILE_DEBUG_LEVEL_KEY);
     }

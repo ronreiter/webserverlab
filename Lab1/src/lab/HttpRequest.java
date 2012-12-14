@@ -16,6 +16,8 @@ public class HttpRequest {
 	private static String TRACE_METHOD = "TRACE";
 	private static String HEAD_METHOD = "HEAD";
 	private static String CONTENT_LENGTH_HEADER = "content-length";
+	private static String HOST_HEADER = "host";
+	
 	String method;
 	String version;
 	String host;
@@ -111,28 +113,23 @@ public class HttpRequest {
 		if (newInstance.headers.containsKey(CONTENT_LENGTH_HEADER))
 		{		
 			Integer contentLength = Integer.parseInt(newInstance.headers.get(CONTENT_LENGTH_HEADER).trim());
+			CharBuffer postBody = CharBuffer.allocate(contentLength);
+			reader.read(postBody);
+			postBody.position(0);
+			newInstance.body += postBody.toString();
 			
 			if (newInstance.method.equals(POST_METHOD))
 			{
-				CharBuffer postBody = CharBuffer.allocate(contentLength);
-				//requestLine = reader.readLine();
-				reader.read(postBody);
-				postBody.position(0);
-				
-				newInstance.body += postBody.toString();
-
 				parseParams(newInstance, postBody.toString());
-				
-			} else {
-				
-				byte [] byteArray = new byte[contentLength];
-				
-				data.read(byteArray);
-				newInstance.body = byteArray.toString();
 			}
-		
 		}
-				
+			
+		if (newInstance.headers.containsKey(HOST_HEADER) && ConfigManager.getInstance().isMultipleSites())
+		{
+			String hostName = newInstance.headers.get(HOST_HEADER);
+			newInstance.host = hostName.split(":")[0].trim();
+		}
+		
 		return newInstance;
 	}
 	

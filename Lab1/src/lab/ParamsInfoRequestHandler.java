@@ -32,10 +32,22 @@ public class ParamsInfoRequestHandler extends RequestHandler {
 	    return stringBuilder.toString();
 	}
 	
-	public ParamsInfoRequestHandler() {
-
+	public ParamsInfoRequestHandler() {		
+	}
+	
+	
+	public void post()
+	{
 		File serverRoot;
-		serverRoot = new File(ConfigManager.getInstance().getRoot());
+		
+		// multiple domain support
+        if (request.getHost() == null) {
+            serverRoot = new File(ConfigManager.getInstance().getRoot());
+        } else {
+            serverRoot = new File(ConfigManager.getInstance().getSitesRoot());
+            serverRoot = new File(serverRoot, request.getHost());
+        }
+        
 		try
 		{
 			File paramsFileHeader = new File(serverRoot, paramsInfoHeaderFileName);
@@ -48,25 +60,15 @@ public class ParamsInfoRequestHandler extends RequestHandler {
 		catch (IOException e)
 		{
 			Logger.log("Failed loading params_info template", Logger.LOG_LEVEL_ERROR);
-			bNoParamInfoTemplate = true;
-		}
-	}
-	
-	
-	public void post()
-	{
-		// If we couldn't find the params info template
-		if (bNoParamInfoTemplate)
-		{
 			this.response.setStatus(500);
 			return;
 		}
+		
 		
         if (request.getHeaders().containsKey("chunked") && request.getHeaders().get("chunked").toLowerCase().equals("yes")) {
             Logger.debug("Setting chunked transfer encoding");
             this.response.setChunkedTransferEncoding(true);
         }
-
 
         String contentType = "text/html";
 
