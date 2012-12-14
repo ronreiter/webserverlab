@@ -42,7 +42,7 @@ public class FileRequestHandler extends RequestHandler {
 
         // check that the file is in the server root
         if (!file.getAbsolutePath().startsWith(serverRoot.getAbsolutePath())) {
-            Logger.error("Attempted to read a file which is out of the serer root! File: " + file.getAbsolutePath());
+            Logger.error("Attempted to read a file which is out of the server root! File: " + file.getAbsolutePath());
             this.response.setStatus(404);
             return;
         }
@@ -68,7 +68,7 @@ public class FileRequestHandler extends RequestHandler {
 
         } catch (FileNotFoundException e) {
             Logger.error("File not found - " + file.getAbsolutePath());
-            this.response.setStatus(500);
+            this.response.setStatus(404);
             e.printStackTrace();
         }
 
