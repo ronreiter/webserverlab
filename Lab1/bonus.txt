@@ -1,0 +1,40 @@
+      ,.  - · - .,  '              , ·. ,.-·~·.,   ‘               ,.         ,·´'; '     .-,             ,'´¨';'                 ,. -,    
+,·'´,.-,   ,. -.,   `';,'          /  ·'´,.-·-.,   `,'‚          ;'´*´ ,'\       ,'  ';'\°    ;  ';\          ,'   ';'\'         ,.·'´,    ,'\   
+ \::\.'´  ;'\::::;:'  ,·':\'       /  .'´\:::::::'\   '\ °        ;    ';::\      ;  ;::'\   ';   ;:'\        ,'   ,'::'\    ,·'´ .·´'´-·'´::::\' 
+  '\:';   ;:;:·'´,.·'´\::::';   ,·'  ,'::::\:;:-·-:';  ';\‚       ;      '\;'      ;  ;:::;   ';  ';::';      ,'   ,'::::;   ;    ';:::\::\::;:'  
+  ,.·'   ,.·:'´:::::::'\;·´   ;.   ';:::;´       ,'  ,':'\‚     ,'  ,'`\   \      ;  ;:::;   ';  ';::;     ,'   ,'::::;'    \·.    `·;:'-·'´     
+  '·,   ,.`' ·- :;:;·'´        ';   ;::;       ,'´ .'´\::';‚    ;  ;::;'\  '\    ;  ;:::;    ';  ';::;    ,'   ,'::::;'      \:`·.   '`·,  '     
+     ;  ';:\:`*·,  '`·,  °    ';   ':;:   ,.·´,.·´::::\;'°   ;  ;:::;  '\  '\ ,'  ;:::;'     \   '·:_,'´.;   ;::::;‘        `·:'`·,   \'      
+     ;  ;:;:'-·'´  ,.·':\       \·,   `*´,.·'´::::::;·´     ,' ,'::;'     '\   ¨ ,'\::;'       \·,   ,.·´:';  ';:::';          ,.'-:;'  ,·\     
+  ,·',  ,. -~:*'´\:::::'\‘      \\:¯::\:::::::;:·´        ;.'\::;        \`*´\::\; °       \:\¯\:::::\`*´\::;  '   ,·'´     ,.·´:::'\    
+   \:\`'´\:::::::::'\;:·'´        `\:::::\;::·'´  °         \:::\'          '\:::\:' '           `'\::\;:·´'\:::'\'   '    \`*'´\::::::::;·'‘   
+    '\;\:::\;: -~*´‘                ¯                      \:'             `*´'‚                         `*´°        \::::\:;:·´        
+             '                        ‘                                                                    '             '`*'´‘    
+
+1. HTTP/1.1 support
+
+2  Virtual servers support (different domains for the same server)
+	To enable this just change in the config.ini file the multipleSites=no to multipleSites=yes (or use bonus number 4 sample request)
+	Note that the original "site" won't be available and that a directory needs to be created for every new domain.
+	To test you can just edit C:\Windows\System32\Drivers\etc\hosts to make sure www.a.com will point to your computer's IP
+
+3. Thread pool 
+	- in order to be efficiant we have a thread pool that dequeues requests. this way threads are always up and ready to go.
+
+4. Remote Configuration 
+	- the server can be configured from remote. In order to configure it you must include the password 
+	default password is 'weakpass'. 
+	add the 'pass' parameter in the get/post request (e.g. pass=weakpass) in order to be able to configure.
+	you can configure the following paramters:
+
+		Configuration		paramter		sample value
+		============================================================
+		Server Port 		port			8080
+		Manager Password 	managerPassword		weakpass
+		Virtual servers 	multipleSites		yes
+		Maximum Threads		maxThreads		10
+		Default Page		defaultPage		index.html
+		Server root directory	root			root
+
+	sample request: http://localhost:8080/serverConfig?pass=weakpass&multipleSites=yes
+	The sample request will enable bonus #2 :)

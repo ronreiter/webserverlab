@@ -15,7 +15,6 @@ public class ParamsInfoRequestHandler extends RequestHandler {
 	String paramsInfoFooter;
 	
 	String paramsInfoBody;
-	Boolean bNoParamInfoTemplate = true;
 	
 	private String readFile( String file ) throws IOException {
 	    BufferedReader reader = new BufferedReader( new FileReader (file));
@@ -55,7 +54,6 @@ public class ParamsInfoRequestHandler extends RequestHandler {
 			paramsInfoHeader = readFile(paramsFileHeader.toString());
 			paramsInfoFooter = readFile(paramsFileFooter.toString());
 			Logger.log("Loaded params_info template successfuly", Logger.LOG_LEVEL_INFO);
-			bNoParamInfoTemplate = false;
 		}
 		catch (IOException e)
 		{

@@ -21,9 +21,11 @@ public class ConfigManager {
     public static String SITES_ROOT_DIRECTORY_KEY = "sitesRoot";
     public static String DEFAULT_SITES_ROOT_DIRECTORY_VALUE = "sites";
 
-	public static String MULTIPLE_SITES_SUPPORT = "multipleSites";
+	public static String MULTIPLE_SITES_SUPPORT_KEY = "multipleSites";
     public static String DEFAULT_MULTIPLE_SITES_SUPPORT = "no";
-
+    
+    public static String MANAGER_PASSWORD_KEY = "managerPassword";
+    public static String DEFAULT_MANAGER_PASSWORD = "weakpass";
     
     public static String MAX_THREADS_KEY = "maxThreads";
     public static int DEFAULT_MAX_THREADS_VALUE = 10;
@@ -75,11 +77,12 @@ public class ConfigManager {
             configuration.put(PORT_KEY, Integer.toString(DEFAULT_PORT_VALUE));
             configuration.put(ROOT_DIRECTORY_KEY, DEFAULT_ROOT_DIRECTORY_VALUE);
             configuration.put(DEFAULT_PAGE_KEY, DEFAULT_DEFAULT_PAGE_VALUE);
-            configuration.put(MULTIPLE_SITES_SUPPORT, DEFAULT_MULTIPLE_SITES_SUPPORT);
+            configuration.put(MULTIPLE_SITES_SUPPORT_KEY, DEFAULT_MULTIPLE_SITES_SUPPORT);
             configuration.put(SITES_ROOT_DIRECTORY_KEY, DEFAULT_SITES_ROOT_DIRECTORY_VALUE);
             configuration.put(MAX_THREADS_KEY, Integer.toString(DEFAULT_MAX_THREADS_VALUE));
             configuration.put(FILE_DEBUG_LEVEL_KEY, Integer.toString(DEFAULT_FILE_DEBUG_LEVEL_VALUE));
             configuration.put(SCREEN_DEBUG_LEVEL_KEY, Integer.toString(DEFAULT_SCREEN_DEBUG_LEVEL_VALUE));
+            configuration.put(MANAGER_PASSWORD_KEY, DEFAULT_MANAGER_PASSWORD);
 
             saveConfiguration();
         }
@@ -160,12 +163,22 @@ public class ConfigManager {
 
 	public Boolean isMultipleSites()
 	{
-		return getStringParameter(MULTIPLE_SITES_SUPPORT).equals("yes");
+		return getStringParameter(MULTIPLE_SITES_SUPPORT_KEY).equals("yes");
 	}
 	
 	public void setIsMultipleSites(String isMultipleSites)
 	{
-		setStringParameter(MULTIPLE_SITES_SUPPORT, isMultipleSites);
+		setStringParameter(MULTIPLE_SITES_SUPPORT_KEY, isMultipleSites);
+	}
+	
+	public String getManagerPassword()
+	{
+		return getStringParameter(MANAGER_PASSWORD_KEY);
+	}
+	
+	public void setManagerPassword(String managerPassword)
+	{
+		setStringParameter(MANAGER_PASSWORD_KEY, managerPassword);
 	}
 	
     public int getFileDebugLevel() {
