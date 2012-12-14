@@ -27,12 +27,13 @@ public class ParamsInfoRequestHandler extends RequestHandler {
 	        stringBuilder.append( line );
 	        stringBuilder.append( ls );
 	    }
-
+	    
+	    reader.close();
 	    return stringBuilder.toString();
 	}
 	
 	public ParamsInfoRequestHandler() {
-		// TODO Auto-generated constructor stub
+
 		File serverRoot;
 		serverRoot = new File(ConfigManager.getInstance().getRoot());
 		try

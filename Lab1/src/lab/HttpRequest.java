@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.CharBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -100,7 +101,7 @@ public class HttpRequest {
 				newInstance.parameters.put(varValue[0], varValue[1]);
 			}
 		} 
-		else newInstance.parameters = null;
+		//else newInstance.parameters = null;
 
 		//Handle Headers
 		requestLine = reader.readLine();
@@ -114,21 +115,24 @@ public class HttpRequest {
 		}
 		
 		if (newInstance.headers.containsKey(CONTENT_LENGTH_HEADER))
-		{
-			int contentLength = Integer.valueOf(newInstance.headers.get(CONTENT_LENGTH_HEADER).toString());
+		{		
+			Integer contentLength = Integer.parseInt(newInstance.headers.get(CONTENT_LENGTH_HEADER).trim());
 			
 			if (newInstance.method.equals(POST_METHOD))
 			{
-				requestLine = reader.readLine();
-				while (!requestLine.equals("") && contentLength > 0)
+				CharBuffer postBody = CharBuffer.allocate(contentLength);
+				//requestLine = reader.readLine();
+				reader.read(postBody);
+				postBody.position(0);
+				
+				newInstance.body += postBody.toString();
+				
+				String [] requestParams = postBody.toString().split("&");
+				for (String line: requestParams)
 				{
-					newInstance.body += requestLine;
-					contentLength -= requestLine.length() + 2;
-					
-					String [] varValue = requestLine.split("=");
+					String [] varValue = line.split("=");
 					if (varValue.length != 2) throw new RuntimeException("Ba Request - Bad BODY parameters format: " + requestLine);
 					newInstance.parameters.put(varValue[0], varValue[1]);
-					requestLine = reader.readLine();
 				}
 			} else {
 				
