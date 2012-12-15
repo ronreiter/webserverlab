@@ -5,7 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.LoggingMXBean;
+//import java.util.logging.LoggingMXBean;
 
 public class FileRequestHandler extends RequestHandler {
 	public Map<String,String> contentTypes;

@@ -1,6 +1,6 @@
 package lab;
 
-import org.omg.CORBA.StringHolder;
+//import org.omg.CORBA.StringHolder;
 
 import java.io.*;
 import java.util.HashMap;
@@ -58,12 +58,12 @@ public class ConfigManager {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     String[] iniLine = line.split("=");
+                    
                     if (iniLine.length != 2) {
                         throw new RuntimeException("Error parsing ini file on line: " + line);
                     }
 
                     configuration.put(iniLine[0], iniLine[1]);
-
                 }
 
                 reader.close();
@@ -72,7 +72,7 @@ public class ConfigManager {
                 Logger.critical("Can't read configuration file!" + e.getStackTrace());
                 System.exit(1);
             }
-
+            
         } else {
             configuration.put(PORT_KEY, Integer.toString(DEFAULT_PORT_VALUE));
             configuration.put(ROOT_DIRECTORY_KEY, DEFAULT_ROOT_DIRECTORY_VALUE);
