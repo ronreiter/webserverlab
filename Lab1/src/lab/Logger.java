@@ -12,6 +12,8 @@ public class Logger {
 	public static int LOG_LEVEL_ERROR = 2;
 	public static int LOG_LEVEL_CRITICAL = 1;
 
+    public static String[] LOG_TAGS = new String[] {"", "CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"};
+
     private static Logger logger;
 
     private PrintWriter logFile;
@@ -41,11 +43,12 @@ public class Logger {
 
     public void logLine(String line, int level) {
         if (logFile != null && config.getFileDebugLevel() >= level) {
-            logFile.println(line);
+            logFile.println(LOG_TAGS[level] + ": " + line);
+            logFile.flush();
         }
 
         if (config.getScreenDebugLevel() >= level) {
-            System.err.println(line);
+            System.err.println(LOG_TAGS[level] + ": " + line);
         }
     }
 
