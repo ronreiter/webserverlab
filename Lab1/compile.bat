@@ -7,4 +7,6 @@ echo
 echo ===============================================================================
 echo To Run copy the following line:
 echo java -classpath .\bin\ lab.Main
+echo -- OR --
+echo just type "run"
 echo ===============================================================================
