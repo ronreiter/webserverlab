@@ -1,13 +1,26 @@
 package lab;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class CrawlerRequestHandler extends RequestHandler {
-	
+	public static final String CRAWLER_TEMPLATE = "templates/index.html";
 	public CrawlerRequestHandler() {
+
 	}
-	
-	
+
+    public void get()
+    {
+        Map<String, Object> templateValues = new HashMap<String, Object>();
+        templateValues.put("status", "OK");
+
+        // return crawler form HTML
+        renderTemplate(CRAWLER_TEMPLATE, templateValues);
+    }
 	public void post()
-	{		
+	{
+        Map<String, Object> templateValues = new HashMap<String, Object>();
+
         if (request.getHeaders().containsKey("chunked") && request.getHeaders().get("chunked").toLowerCase().equals("yes")) {
             Logger.debug("Setting chunked transfer encoding");
             this.response.setChunkedTransferEncoding(true);
@@ -46,11 +59,10 @@ public class CrawlerRequestHandler extends RequestHandler {
         			}
         		}
        		}
-        }        
-	}
-	
-	public void get()
-	{
-		// return crawler form HTML
-	}
+        }
+
+        renderTemplate(CRAWLER_TEMPLATE, templateValues);
+
+    }
+
 }
