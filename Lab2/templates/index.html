@@ -24,10 +24,12 @@
         </div>
     </div>
     <div class="container">
-        <div class="alert" style="margin-top: 30px">{{ status }}</div>
+        <div style="margin-top: 30px">
+            {{ status }}
+            {{ run_status }}
+        </div>
         <div class="row">
             <div class="span6">
-                {{ run_status }}
                 <h3>Add new domain to crawl</h3>
                 <form class="form-horizontal" method="post">
                     <div class="control-group">
@@ -40,7 +42,7 @@
                     <div class="control-group">
                         <div class="controls">
                             <label class="checkbox">
-                                <input type="checkbox" name="ignore-robots" id="ignore-robots"/> Ignore robots.txt
+                                <input type="checkbox" name="robots" id="robots"/> Ignore robots.txt
                             </label>
                             <button type="submit" class="btn btn-primary">Crawl domain</button>
                         </div>
