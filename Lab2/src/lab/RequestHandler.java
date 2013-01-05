@@ -87,7 +87,7 @@ public class RequestHandler {
         }
 
         for (String key : values.keySet()) {
-            format = format.replace("$" + key, values.get(key).toString());
+            format = format.replace("{{ " + key + " }}", values.get(key).toString());
         }
 
         response.setBody(format);

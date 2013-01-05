@@ -5,14 +5,21 @@ import java.util.Map;
 
 public class CrawlerRequestHandler extends RequestHandler {
 	public static final String CRAWLER_TEMPLATE = "templates/index.html";
+    private Crawler crawler;
 	public CrawlerRequestHandler() {
-
-	}
+        crawler = Crawler.getInstance();
+    }
 
     public void get()
     {
         Map<String, Object> templateValues = new HashMap<String, Object>();
-        templateValues.put("status", "OK");
+        if (crawler.getStatus() == Crawler.STATUS_READY) {
+            templateValues.put("status", "Crawler is ready to run.");
+        } else if (crawler.getStatus() == Crawler.STATUS_BUSY) {
+            templateValues.put("status", "Crawler is busy.");
+        } else {
+            templateValues.put("status", "Crawler status is unknown.");
+        }
 
         // return crawler form HTML
         renderTemplate(CRAWLER_TEMPLATE, templateValues);

@@ -14,6 +14,9 @@ public class Crawler {
     private int Tasks = 0;
     private int MAX_TASKS = 0;
 
+    private static Crawler instance = null;
+    public static final int STATUS_READY = 1;
+    public static final int STATUS_BUSY = 2;
 
     private String getDomainName(String URLToParse)
     {
@@ -49,5 +52,13 @@ public class Crawler {
             return -1; // TODO: BUGBUG - Retier to define return error
         }
         return -1;
+    }
+
+    public static Crawler getInstance() {
+        if (instance == null) {
+            instance = new Crawler();
+        }
+
+        return instance;
     }
 }
