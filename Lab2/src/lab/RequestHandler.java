@@ -24,6 +24,11 @@ public class RequestHandler {
 
         this.response.setVersion(this.request.getVersion());
 
+        if (request.getHeaders().containsKey("chunked") && request.getHeaders().get("chunked").toLowerCase().equals("yes")) {
+            Logger.debug("Setting chunked transfer encoding");
+            this.response.setChunkedTransferEncoding(true);
+        }
+
         try {
             if (request.getMethod().equals("GET")) {
                 this.get();
@@ -40,6 +45,7 @@ public class RequestHandler {
 
         } catch (Exception e) {
             Logger.error("Exception on server! " + e.getMessage());
+            e.printStackTrace();
             this.response.setStatus(500);
         }
 
@@ -76,6 +82,13 @@ public class RequestHandler {
         }
     }
 
+    public String renderString(String format, Map<String, Object> values) {
+        for (String key : values.keySet()) {
+            format = format.replace("{{ " + key + " }}", values.get(key).toString());
+        }
+        return format;
+    }
+
     public void renderTemplate(String path, Map<String, Object> values) {
         String format = null;
         try {
@@ -86,10 +99,6 @@ public class RequestHandler {
             return;
         }
 
-        for (String key : values.keySet()) {
-            format = format.replace("{{ " + key + " }}", values.get(key).toString());
-        }
-
-        response.setBody(format);
+        response.setBody(renderString(format, values));
     }
 }

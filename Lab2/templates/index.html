@@ -2,13 +2,20 @@
 <head>
     <title>Crawler Interface</title>
     <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/css/font-awesome.css"/>
+    <style type="text/css">
+        input[type="text"] {
+            box-sizing: content-box;
+        }
+    </style>
+    <script src="/js/jquery.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
 </head>
 <body>
     <div class="navbar navbar-static-top">
         <div class="navbar-inner">
             <div class="container">
-                <a class="brand" href="#">Crawler</a>
+                <a class="brand" href="#"><div class="icon-cloud-download"></div> Crawler</a>
                 <ul class="nav">
                     <li class="active"><a href="#">Home</a></li>
                     <li><a href="#">Link</a></li>
@@ -17,10 +24,34 @@
         </div>
     </div>
     <div class="container">
-        <div class="alert">{{ status }}</div>
+        <div class="alert" style="margin-top: 30px">{{ status }}</div>
         <div class="row">
-            <h1>Crawler</h1>
-            <h3>Add new domain to crawl</h3>
+            <div class="span6">
+                {{ run_status }}
+                <h3>Add new domain to crawl</h3>
+                <form class="form-horizontal" method="post">
+                    <div class="control-group">
+                        <label class="control-label">Domain to crawl</label>
+                        <div class="controls">
+                            <input class="input-large" type="text" name="domain" id="domain" placeholder="Example: www.google.com"/>
+                        </div>
+
+                    </div>
+                    <div class="control-group">
+                        <div class="controls">
+                            <label class="checkbox">
+                                <input type="checkbox"> Ignore robots.txt
+                            </label>
+                            <button type="submit" class="btn btn-primary">Crawl domain</button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+            <div class="span6">
+                <h3>Current status</h3>
+                {{ crawl_status }}
+            </div>
         </div>
     </div>
 </body>

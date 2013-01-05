@@ -17,6 +17,8 @@ public class Crawler {
     private static Crawler instance = null;
     public static final int STATUS_READY = 1;
     public static final int STATUS_BUSY = 2;
+    public static final int ADD_STATUS_SUCCESS = 1;
+    public static final int ADD_STATUS_RUNNING = 2;
 
     private String getDomainName(String URLToParse)
     {
@@ -34,7 +36,7 @@ public class Crawler {
         return -1;
     }
 
-    public int add(String URLToAdd)
+    public int add(String URLToAdd, boolean ignoreRobots)
     {
         if (Tasks < MAX_TASKS)
         {
