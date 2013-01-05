@@ -65,7 +65,7 @@ public class Crawler {
         return null;
     }
 
-    private int createTask(String URLToAdd)
+    private int createTask(String URLToAdd, boolean ignoreRobots)
     {
         try {
             // Check that the URL is valid
@@ -91,7 +91,7 @@ public class Crawler {
     public int add(String URLToAdd, boolean ignoreRobots)
     {
         try {
-            return createTask(URLToAdd);
+            return createTask(URLToAdd, ignoreRobots);
         }
         catch (RuntimeException e)
         {
