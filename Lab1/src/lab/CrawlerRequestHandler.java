@@ -1,8 +1,8 @@
 package lab;
 
-public class ServerConfigRequestHandler extends RequestHandler {
+public class CrawlerRequestHandler extends RequestHandler {
 	
-	public ServerConfigRequestHandler() {		
+	public CrawlerRequestHandler() {
 	}
 	
 	
