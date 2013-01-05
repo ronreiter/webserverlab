@@ -27,6 +27,8 @@ public class CrawlerRequestHandler extends RequestHandler {
         setCrawlerStatus(templateValues);
 
         templateValues.put("run_status", "");
+        templateValues.put("crawl_status", "");
+
         // return crawler form HTML
         renderTemplate(CRAWLER_TEMPLATE, templateValues);
     }
@@ -71,14 +73,14 @@ public class CrawlerRequestHandler extends RequestHandler {
        		}
         }
 
-        addStatus = crawler.add(request.parameters.get("domain"), request.parameters.get("robots").equals("checked"));
-
+        addStatus = crawler.add(request.parameters.get("domain"), request.parameters.containsKey("robots") && request.parameters.get("robots").equals("checked"));
+        Logger.info("Adding task to crawler - result: " + addStatus);
         if (addStatus == Crawler.ADD_STATUS_SUCCESS) {
-            templateValues.put("run_status", "<div class='alert alert-success>Crawler started successfully</div>");
+            templateValues.put("run_status", "<div class='alert alert-success'>Crawler started successfully</div>");
         } else if (addStatus == Crawler.ADD_STATUS_RUNNING) {
-            templateValues.put("run_status", "<div class='alert alert-warn>Crawler already running</div>");
+            templateValues.put("run_status", "<div class='alert alert-warn'>Crawler already running</div>");
         } else {
-            templateValues.put("run_status", "<div class='alert alert-error>Crawler failed to start</div>");
+            templateValues.put("run_status", "<div class='alert alert-error'>Crawler failed to start</div>");
         }
 
         setCrawlerStatus(templateValues);
