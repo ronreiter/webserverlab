@@ -51,6 +51,6 @@ public class CrawlerRequestHandler extends RequestHandler {
 	
 	public void get()
 	{
-		this.post();
+		// return crawler form HTML
 	}
 }
