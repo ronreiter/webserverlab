@@ -1,5 +1,7 @@
 package lab;
 
+import sun.font.CreatedFontTracker;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -14,22 +16,73 @@ public class Crawler {
     private int Tasks = 0;
     private int MAX_TASKS = 0;
 
+
     private static Crawler instance = null;
     public static final int STATUS_READY = 1;
     public static final int STATUS_BUSY = 2;
     public static final int ADD_STATUS_SUCCESS = 1;
     public static final int ADD_STATUS_RUNNING = 2;
 
+    private boolean singleTask = false;
+
+    CrawlerTaskPool taskPool;
+
+    public Crawler() {
+
+        taskPool = new CrawlerTaskPool();
+        singleTask = false;
+        if (1 == ConfigManager.getInstance().getMaxCrawlerThreads())
+        {
+            singleTask = true;
+        }
+    }
+
     private String getDomainName(String URLToParse)
     {
+        String [] ParsedURL = URLToParse.split("/");
+        switch (ParsedURL.length)
+        {
+            case (0):
+                    return null; // TODO: BUGBUG - Get reiter error code
+            case (1):
+                if (ParsedURL[0].substring(0,3) == "http")
+                    return null; // TODO: BUGBUG - get reiter error code
+                else
+                    return ParsedURL[0];
+                //BUGBUG - notice that if you remove the if/else then you must add:
+                //break;
+            case (2):
+                if (ParsedURL[0].substring(0,3) == "http")
+                {
+                    return ParsedURL[1];
+                } else
+                {
+                    return ParsedURL[0];
+                }
+                //BUGBUG - notice that if you remove the if/else then you must add:
+                //break;
+        }
+
         return null;
     }
+
     private int createTask(String URLToAdd)
     {
         try {
+            // Check that the URL is valid
             InetAddress.getByName(getDomainName(URLToAdd));
 
+            // Create the new Task
+            if (singleTask && (taskPool.getTaskCount() > 0))
+            {
+                return -1; // TODO: BUGBUG: Reiter to set up error codes
+            }  else
+            {
+                taskPool.enqueue(URLToAdd);
+            }
+
         } catch (UnknownHostException e) {
+            Logger.error("Failed parsing requested URL: " + URLToAdd);
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             return -1;
         }
@@ -38,13 +91,14 @@ public class Crawler {
 
     public int add(String URLToAdd, boolean ignoreRobots)
     {
-        if (Tasks < MAX_TASKS)
-        {
+        try {
             return createTask(URLToAdd);
-        } else
-        {
-            return -1; // TODO: BUGBUG - Reiter to define return error
         }
+        catch (RuntimeException e)
+        {
+            return -1; // TODO: BUGBUG: Reiter to define error codes
+        }
+
     }
 
     public int getStatus()

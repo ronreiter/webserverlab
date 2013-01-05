@@ -30,6 +30,9 @@ public class ConfigManager {
     public static String MAX_THREADS_KEY = "maxThreads";
     public static int DEFAULT_MAX_THREADS_VALUE = 10;
 
+    public static String MAX_CRAWLER_THREADS_KEY = "maxCrawlerThreads";
+    public static int DEFAULT_MAX_CRAWLER_THREADS_VALUE = 1;
+
     public static String FILE_DEBUG_LEVEL_KEY = "fileDebugLevel";
     public static int DEFAULT_FILE_DEBUG_LEVEL_VALUE = Logger.LOG_LEVEL_DEBUG;
 
@@ -80,6 +83,7 @@ public class ConfigManager {
             configuration.put(MULTIPLE_SITES_SUPPORT_KEY, DEFAULT_MULTIPLE_SITES_SUPPORT);
             configuration.put(SITES_ROOT_DIRECTORY_KEY, DEFAULT_SITES_ROOT_DIRECTORY_VALUE);
             configuration.put(MAX_THREADS_KEY, Integer.toString(DEFAULT_MAX_THREADS_VALUE));
+            configuration.put(MAX_CRAWLER_THREADS_KEY, Integer.toString(DEFAULT_MAX_CRAWLER_THREADS_VALUE));
             configuration.put(FILE_DEBUG_LEVEL_KEY, Integer.toString(DEFAULT_FILE_DEBUG_LEVEL_VALUE));
             configuration.put(SCREEN_DEBUG_LEVEL_KEY, Integer.toString(DEFAULT_SCREEN_DEBUG_LEVEL_VALUE));
             configuration.put(MANAGER_PASSWORD_KEY, DEFAULT_MANAGER_PASSWORD);
@@ -136,8 +140,16 @@ public class ConfigManager {
 	public void setMaxThreads(int maxThreads) {
 		setIntParameter(MAX_THREADS_KEY, maxThreads);
 	}
-	
-	public String getRoot() {
+
+    public int getMaxCrawlerThreads() {
+        return getIntParameter(MAX_CRAWLER_THREADS_KEY);
+    }
+
+    public void setMaxCrawlerThreads(int maxThreads) {
+        setIntParameter(MAX_CRAWLER_THREADS_KEY, maxThreads);
+    }
+
+    public String getRoot() {
 		return getStringParameter(DEFAULT_ROOT_DIRECTORY_VALUE);
 	}
 	
