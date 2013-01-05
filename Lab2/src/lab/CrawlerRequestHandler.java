@@ -71,7 +71,7 @@ public class CrawlerRequestHandler extends RequestHandler {
        		}
         }
 
-        addStatus = crawler.add(request.parameters.get("domain"), request.parameters.get("ignore-robots").equals("checked"));
+        addStatus = crawler.add(request.parameters.get("domain"), request.parameters.get("robots").equals("checked"));
 
         if (addStatus == Crawler.ADD_STATUS_SUCCESS) {
             templateValues.put("run_status", "<div class='alert alert-success>Crawler started successfully</div>");
