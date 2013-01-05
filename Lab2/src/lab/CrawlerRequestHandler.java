@@ -10,9 +10,7 @@ public class CrawlerRequestHandler extends RequestHandler {
         crawler = Crawler.getInstance();
     }
 
-    public void get()
-    {
-        Map<String, Object> templateValues = new HashMap<String, Object>();
+    public void setCrawlerStatus(Map<String, Object> templateValues) {
         if (crawler.getStatus() == Crawler.STATUS_READY) {
             templateValues.put("status", "<div class='alert alert-success'>Crawler is ready to run</div>");
         } else if (crawler.getStatus() == Crawler.STATUS_BUSY) {
@@ -21,13 +19,20 @@ public class CrawlerRequestHandler extends RequestHandler {
             templateValues.put("status", "");
         }
 
+    }
+
+    public void get()
+    {
+        Map<String, Object> templateValues = new HashMap<String, Object>();
+        setCrawlerStatus(templateValues);
+
         templateValues.put("run_status", "");
         // return crawler form HTML
         renderTemplate(CRAWLER_TEMPLATE, templateValues);
     }
 	public void post()
 	{
-        int status = 0;
+        int addStatus = 0;
         Map<String, Object> templateValues = new HashMap<String, Object>();
 
 
@@ -66,16 +71,17 @@ public class CrawlerRequestHandler extends RequestHandler {
        		}
         }
 
-        status = crawler.add(request.parameters.get("domain"), request.parameters.get("ignore-robots").equals("checked"));
-        templateValues.put("status", "Crawler is ready to run.");
+        addStatus = crawler.add(request.parameters.get("domain"), request.parameters.get("ignore-robots").equals("checked"));
 
-        if (status == Crawler.ADD_STATUS_SUCCESS) {
+        if (addStatus == Crawler.ADD_STATUS_SUCCESS) {
             templateValues.put("run_status", "<div class='alert alert-success>Crawler started successfully</div>");
-        } else if (status == Crawler.ADD_STATUS_RUNNING) {
+        } else if (addStatus == Crawler.ADD_STATUS_RUNNING) {
             templateValues.put("run_status", "<div class='alert alert-warn>Crawler already running</div>");
         } else {
             templateValues.put("run_status", "<div class='alert alert-error>Crawler failed to start</div>");
         }
+
+        setCrawlerStatus(templateValues);
 
         templateValues.put("crawl_status", "");
 
