@@ -31,6 +31,26 @@ public class Crawler {
     }
 
 
+    private static Crawler instance = null;
+    public static final int STATUS_READY = 1;
+    public static final int STATUS_BUSY = 2;
+    public static final int ADD_STATUS_SUCCESS = 1;
+    public static final int ADD_STATUS_RUNNING = 2;
+
+    private boolean singleTask = false;
+
+    CrawlerTaskPool taskPool;
+
+    public Crawler() {
+
+        taskPool = new CrawlerTaskPool();
+        singleTask = false;
+        if (1 == ConfigManager.getInstance().getMaxCrawlerThreads())
+        {
+            singleTask = true;
+        }
+    }
+
     private String getDomainName(String URLToParse)
     {
         String [] ParsedURL = URLToParse.split("/");
@@ -83,7 +103,7 @@ public class Crawler {
         return -1;
     }
 
-    public int add(String URLToAdd)
+    public int add(String URLToAdd, boolean ignoreRobots)
     {
         try {
             return createTask(URLToAdd);
@@ -102,5 +122,13 @@ public class Crawler {
             return -1; // TODO: BUGBUG - Retier to define return error
         }
         return -1;
+    }
+
+    public static Crawler getInstance() {
+        if (instance == null) {
+            instance = new Crawler();
+        }
+
+        return instance;
     }
 }

@@ -1,18 +1,36 @@
 package lab;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class CrawlerRequestHandler extends RequestHandler {
-	
+	public static final String CRAWLER_TEMPLATE = "templates/index.html";
+    private Crawler crawler;
 	public CrawlerRequestHandler() {
-	}
-	
-	
+        crawler = Crawler.getInstance();
+    }
+
+    public void get()
+    {
+        Map<String, Object> templateValues = new HashMap<String, Object>();
+        if (crawler.getStatus() == Crawler.STATUS_READY) {
+            templateValues.put("status", "<div class='alert alert-success'>Crawler is ready to run</div>");
+        } else if (crawler.getStatus() == Crawler.STATUS_BUSY) {
+            templateValues.put("status", "<div class='alert alert-warn'>Crawler is busy</div>");
+        } else {
+            templateValues.put("status", "");
+        }
+
+        templateValues.put("run_status", "");
+        // return crawler form HTML
+        renderTemplate(CRAWLER_TEMPLATE, templateValues);
+    }
 	public void post()
-	{		
-        if (request.getHeaders().containsKey("chunked") && request.getHeaders().get("chunked").toLowerCase().equals("yes")) {
-            Logger.debug("Setting chunked transfer encoding");
-            this.response.setChunkedTransferEncoding(true);
-        }        
-             
+	{
+        int status = 0;
+        Map<String, Object> templateValues = new HashMap<String, Object>();
+
+
         if (request.parameters.containsKey("pass"))
         {
         	if (ConfigManager.getInstance().getManagerPassword().equals(request.parameters.get("pass")))
@@ -46,11 +64,23 @@ public class CrawlerRequestHandler extends RequestHandler {
         			}
         		}
        		}
-        }        
-	}
-	
-	public void get()
-	{
-		// return crawler form HTML
-	}
+        }
+
+        status = crawler.add(request.parameters.get("domain"), request.parameters.get("ignore-robots").equals("checked"));
+        templateValues.put("status", "Crawler is ready to run.");
+
+        if (status == Crawler.ADD_STATUS_SUCCESS) {
+            templateValues.put("run_status", "<div class='alert alert-success>Crawler started successfully</div>");
+        } else if (status == Crawler.ADD_STATUS_RUNNING) {
+            templateValues.put("run_status", "<div class='alert alert-warn>Crawler already running</div>");
+        } else {
+            templateValues.put("run_status", "<div class='alert alert-error>Crawler failed to start</div>");
+        }
+
+        templateValues.put("crawl_status", "");
+
+        renderTemplate(CRAWLER_TEMPLATE, templateValues);
+
+    }
+
 }
