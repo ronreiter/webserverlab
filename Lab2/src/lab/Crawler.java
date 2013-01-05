@@ -21,6 +21,7 @@ public class Crawler {
     public static final int STATUS_BUSY = 2;
     public static final int ADD_STATUS_SUCCESS = 1;
     public static final int ADD_STATUS_RUNNING = 2;
+    public static final int STATUS_ERROR_BAD_URL = 3;
 
     private boolean singleTask = false;
 
@@ -42,10 +43,10 @@ public class Crawler {
         switch (ParsedURL.length)
         {
             case (0):
-                    return null; // TODO: BUGBUG - Get reiter error code
+                    return ""; // TODO: BUGBUG - Get reiter error code
             case (1):
                 if (ParsedURL[0].substring(0,3) == "http")
-                    return null; // TODO: BUGBUG - get reiter error code
+                    return ""; // TODO: BUGBUG - get reiter error code
                 else
                     return ParsedURL[0];
                 //BUGBUG - notice that if you remove the if/else then you must add:
@@ -69,12 +70,18 @@ public class Crawler {
     {
         try {
             // Check that the URL is valid
-            InetAddress.getByName(getDomainName(URLToAdd));
+            String domain = getDomainName(URLToAdd);
+            if (domain == "")
+            {
+                return STATUS_ERROR_BAD_URL;
+            }
+
+            InetAddress.getByName(domain);
 
             // Create the new Task
             if (singleTask && (taskPool.getTaskCount() > 0))
             {
-                return -1; // TODO: BUGBUG: Reiter to set up error codes
+                return STATUS_BUSY; // TODO: BUGBUG: Reiter to set up error codes
             }  else
             {
                 taskPool.enqueue(URLToAdd);
@@ -83,9 +90,9 @@ public class Crawler {
         } catch (UnknownHostException e) {
             Logger.error("Failed parsing requested URL: " + URLToAdd);
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            return -1;
+            return STATUS_ERROR_BAD_URL;
         }
-        return -1;
+        return STATUS_READY;
     }
 
     public int add(String URLToAdd, boolean ignoreRobots)
