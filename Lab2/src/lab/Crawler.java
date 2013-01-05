@@ -16,21 +16,6 @@ public class Crawler {
     private int Tasks = 0;
     private int MAX_TASKS = 0;
 
-    private boolean singleTask = false;
-
-    CrawlerTaskPool taskPool;
-
-    public Crawler() {
-
-        taskPool = new CrawlerTaskPool();
-        singleTask = false;
-        if (1 == ConfigManager.getInstance().getMaxCrawlerThreads())
-        {
-            singleTask = true;
-        }
-    }
-
-
     private static Crawler instance = null;
     public static final int STATUS_READY = 1;
     public static final int STATUS_BUSY = 2;
