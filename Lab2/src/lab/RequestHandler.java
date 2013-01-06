@@ -69,7 +69,7 @@ public class RequestHandler {
         this.response.setBody(this.request.getRequestBody());
     }
 
-    private static String readFile(String path) throws IOException {
+    public static String readFile(String path) throws IOException {
         FileInputStream stream = new FileInputStream(new File(path));
         try {
             FileChannel fc = stream.getChannel();
@@ -82,7 +82,7 @@ public class RequestHandler {
         }
     }
 
-    public String renderString(String format, Map<String, Object> values) {
+    public static String renderString(String format, Map<String, Object> values) {
         for (String key : values.keySet()) {
             format = format.replace("{{ " + key + " }}", values.get(key).toString());
         }

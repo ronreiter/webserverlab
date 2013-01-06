@@ -1,5 +1,10 @@
 package lab;
 
+import java.awt.geom.Path2D;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedList;
@@ -44,22 +49,22 @@ public class Analyzer implements Runnable {
         Matcher linkMatcher = linkParser.matcher(html);
         if (linkMatcher.find()) {
             try {
-                links.add(getURL(linkMatcher.group(0)));
+                links.add(getURL(linkMatcher.group(1)));
             } catch (MalformedURLException e) {
-                Logger.debug("malformed URL: " + linkMatcher.group(0));
+                Logger.debug("malformed URL: " + linkMatcher.group(1));
             }
         }
 
         Matcher imgMatcher = imgParser.matcher(html);
         if (imgMatcher.find()) {
             try {
-                links.add(getURL(imgMatcher.group(0)));
+                links.add(getURL(imgMatcher.group(1)));
             } catch (MalformedURLException e) {
-                Logger.debug("malformed image: " + imgMatcher.group(0));
+                Logger.debug("malformed image: " + imgMatcher.group(1));
             }
         }
 
-        return null;
+        return links;
     }
 
     public URL getURL(String relativeLink) throws MalformedURLException {
@@ -67,7 +72,8 @@ public class Analyzer implements Runnable {
             return new URL(relativeLink);
         }
 
-        return new URL(baseUrl, relativeLink);
+        String urlString = baseUrl.getProtocol() + "://" + baseUrl.getHost() + new File(baseUrl.getPath(), relativeLink).toString();
+        return new URL(urlString);
     }
 
     public int getURLType(URL url) {
@@ -87,6 +93,20 @@ public class Analyzer implements Runnable {
             }
         }
         return URL_TYPE_OTHER;
+    }
+
+    // unit test
+    public static void main(String[] args) throws MalformedURLException {
+        Analyzer analyzer = new Analyzer();
+        analyzer.baseUrl = new URL("http://www.example.com");
+
+        List<URL> links = analyzer.parseLinks("<a href='a.html'>blat</a> blat <img src='http://www.google.com/image.png'/>");
+
+        for (URL link : links) {
+            System.out.println("link: " + link.toString() + ", type: " + analyzer.getURLType(link));
+        }
+
+        System.out.println(links);
     }
 
 

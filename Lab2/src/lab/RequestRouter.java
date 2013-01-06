@@ -24,7 +24,6 @@ public class RequestRouter {
         // TODO: routes.add(new Route(".*", null, FileRequestHandler));
         // TODO: handle paramsinfo?
         routes.add(new Route("/", null, new CrawlerRequestHandler()));
-        routes.add(new Route("/params_info.html", null, new ParamsInfoRequestHandler()));
         routes.add(new Route(".*", null, new FileRequestHandler()));
 	}
 	
