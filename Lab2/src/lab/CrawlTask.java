@@ -27,14 +27,14 @@ public class CrawlTask implements Runnable {
         // create the analyzers thread pool
         for (int i = 0; i < ConfigManager.getInstance().getMaxAnalyzers(); i++) {
             Thread thread = new Thread(new Analyzer(queue, this));
-            thread.run();
+            thread.start();
             this.analyzers.add(thread);
         }
 
         // create the downloaders thread pool
         for (int i = 0; i < ConfigManager.getInstance().getMaxDownloaders(); i++) {
             Thread thread = new Thread(new Downloader(queue));
-            thread.run();
+            thread.start();
             this.downloaders.add(thread);
         }
     }
@@ -67,6 +67,8 @@ public class CrawlTask implements Runnable {
 
         queue.waitUntilFinished();
 
+        Logger.debug("Tasked finished, releasing: " + task.urlToCrawl);
+        task.progress = CrawlRequest.PROGRESS_FINISHED;
         parent.taskMutex.unregister();
     }
 

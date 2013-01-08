@@ -26,13 +26,11 @@ public class Analyzer implements Runnable {
         while (true) {
             try {
                 Resource toAnalyze = queue.dequeueToAnalyze();
-
-                parent.currentRequest.addStat(toAnalyze);
-
                 if (toAnalyze == null) {
-                    Logger.info("Closing analyzer.");
+                    Logger.info("Analyzer shutting down.");
                     return;
                 }
+                parent.currentRequest.addStat(toAnalyze);
 
                 List<URL> urls = null;
                 try {
@@ -47,7 +45,7 @@ public class Analyzer implements Runnable {
 
                 for (URL url : urls) {
                     if (!url.getHost().equals(toAnalyze.url.getHost())) {
-                        Logger.debug("Not downloading URL " + url.toString() + " because it is not in " + toAnalyze.url.getHost());
+                        Logger.debug("Not downloading URL.getHost " + url.getHost() + " because it is not in " + toAnalyze.url.getHost());
                         continue;
                     }
 
@@ -103,8 +101,7 @@ public class Analyzer implements Runnable {
             return new URL(relativeLink);
         }
 
-        String urlString = baseUrl.getProtocol() + "://" + baseUrl.getHost() + new File(baseUrl.getPath(), relativeLink).toString();
-        return new URL(urlString);
+        return new URL(baseUrl, relativeLink);
     }
 
     public int getURLType(URL url) {

@@ -32,6 +32,7 @@ public class Crawler {
         requests = new LinkedList<CrawlRequest>();
         crawlTaskPool = new CrawlTaskPool();
 
+        crawlTaskPool.start();
     }
 
     private int createTask(String urlToAdd, boolean ignoreRobots)

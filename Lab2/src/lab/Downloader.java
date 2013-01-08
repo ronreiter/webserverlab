@@ -30,7 +30,17 @@ public class Downloader implements Runnable {
             try {
                 Resource toDownload = queue.dequeueToDownload();
 
+                if (toDownload == null) {
+                    Logger.info("Downloader shutting down.");
+                    return;
+                }
+
                 byte[] data = downloadUrl(toDownload.url);
+
+                if (data == null) {
+                    Logger.error("Couldn't download resource " + toDownload.url);
+                    continue;
+                }
 
                 Resource resource = new Resource();
                 resource.url = toDownload.url;
@@ -42,7 +52,10 @@ public class Downloader implements Runnable {
 
                 Logger.info("Downloaded resource " + resource.url + " total bytes: " + resource.body.length);
 
+                queue.enqueueToAnalyze(resource);
+
                 if (shutdown) {
+                    Logger.info("Downloader shutting down.");
                     return;
                 }
 

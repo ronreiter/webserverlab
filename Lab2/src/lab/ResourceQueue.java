@@ -8,21 +8,23 @@ public class ResourceQueue {
     private boolean shutdown = false;
     private Integer threadsWaiting = 0;
     private int maxThreads = 0;
+    private Object lock = null;
 
 	public ResourceQueue(int maxThreads) {
 		this.analyzeTasks = new LinkedList<Resource>();
         this.downloadTasks = new LinkedList<Resource>();
         this.maxThreads = maxThreads;
+        this.lock = new Object();
 	}
 
     public void waitUntilFinished() {
-        synchronized (threadsWaiting) {
+        synchronized (lock) {
             while (true) {
                 if (shutdown) {
                     return;
                 }
                 try {
-                    threadsWaiting.wait();
+                    lock.wait();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     return;
@@ -33,7 +35,9 @@ public class ResourceQueue {
 
     public void shutdown() {
         shutdown = true;
-        analyzeTasks.notifyAll();
+        synchronized (lock) {
+            lock.notifyAll();
+        }
     }
 
     public void enqueueToAnalyze(Resource resource) {
@@ -53,30 +57,33 @@ public class ResourceQueue {
     }
 
     private void enqueue(LinkedList<Resource> queue, Resource resource) {
-		synchronized (threadsWaiting) {
+		synchronized (lock) {
 			queue.add(resource);
-            threadsWaiting.notifyAll();
+            lock.notifyAll();
 		}
 	}
 	
 	private Resource dequeue(LinkedList<Resource> queue) throws InterruptedException {
 		while (true) {
-			synchronized (threadsWaiting) {
+			synchronized (lock) {
                 if (queue.isEmpty()) {
                     threadsWaiting += 1;
+
+                    /*
                     if (maxThreads == threadsWaiting) {
                         shutdown();
                     }
+                    */
 
                     if (shutdown) {
                         return null;
                     }
 
-                    queue.wait();
+                    lock.wait();
                 } else {
                     threadsWaiting -= 1;
 					Resource taskToReturn = queue.pop();
-                    threadsWaiting.notifyAll();
+                    lock.notifyAll();
                     return taskToReturn;
 				}
 			}
