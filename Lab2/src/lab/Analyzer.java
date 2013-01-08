@@ -45,7 +45,8 @@ public class Analyzer implements Runnable {
 
                 for (URL url : urls) {
                     if (!url.getHost().equals(toAnalyze.url.getHost())) {
-                        Logger.debug("Not downloading URL.getHost " + url.getHost() + " because it is not in " + toAnalyze.url.getHost());
+                        Logger.debug("Not downloading from " + url.getHost() + " because it is not in " + toAnalyze.url.getHost());
+                        parent.currentRequest.domainsConnected.add(url.getHost());
                         continue;
                     }
 
