@@ -26,6 +26,9 @@ public class Analyzer implements Runnable {
         while (true) {
             try {
                 Resource toAnalyze = queue.dequeueToAnalyze();
+
+                parent.currentRequest.addStat(toAnalyze);
+
                 if (toAnalyze == null) {
                     Logger.info("Closing analyzer.");
                     return;
