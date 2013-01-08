@@ -23,8 +23,10 @@ public class RobotsParser {
         // parse robots file:
         for (String line : robotsFile.split("\n")) {
             if (line.startsWith("Disallow:")) {
+                Logger.debug("ROBOT: Adding " + line.trim() + " to disallowed list");
                 disallowedPaths.add(line.split(":")[1].trim());
             } else if (line.startsWith("Allow:")) {
+                Logger.debug("ROBOT: Adding " + line + " to allowed list");
                 allowedPaths.add(line.split(":")[1].trim());
             }
         }
