@@ -23,34 +23,45 @@ public class Crawler {
     public static final int STATUS_ERROR_BAD_URL = 3;
     public static final int STATUS_ERROR_UNKNOWN = 4;
 
-    CrawlerRequestQueue requestQueue;
     List<CrawlRequest> requests;
 
+    CrawlTaskPool crawlTaskPool;
+
     public Crawler() {
-        requestQueue = new CrawlerRequestQueue();
+
         requests = new LinkedList<CrawlRequest>();
+        crawlTaskPool = new CrawlTaskPool();
 
     }
 
     private int createTask(String urlToAdd, boolean ignoreRobots)
     {
         try {
+            URL url;
             // Check that the URL is valid
-            URL url = new URL(urlToAdd);
+            if (!urlToAdd.contains("://"))
+                url = new URL("http://" + urlToAdd);
+            else url = new URL(urlToAdd);
+
 
             // make sure the domain is valid
             InetAddress.getByName(url.getHost());
 
-            // Create the new Task
-            if (requests.size() == ConfigManager.getInstance().getMaxCrawlerThreads())
-            {
-                return STATUS_BUSY;
-            }  else
-            {
-                CrawlRequest request = new CrawlRequest(url, ignoreRobots);
 
+            // Create the new Task
+            if (crawlTaskPool.taskMutex.count() == ConfigManager.getInstance().getMaxCrawlerThreads())
+            {
+                Logger.debug("rejecting crawl request due to server too busy: " + url.toString());
+                return STATUS_BUSY;
+            }  else if (crawlTaskPool.taskMutex.count() < ConfigManager.getInstance().getMaxCrawlerThreads())
+            {
+                Logger.debug("Adding crawl request number: " + crawlTaskPool.taskMutex.count() + " URL: " + url.toString());
+                CrawlRequest request = new CrawlRequest(url, ignoreRobots);
+                crawlTaskPool.enqueue(request);
                 requests.add(request);
-                requestQueue.enqueue(request);
+            } else {
+                Logger.critical("!!! More crawler tasks than allowed !!!");
+                return STATUS_ERROR_UNKNOWN;
             }
 
         } catch (UnknownHostException e) {

@@ -11,6 +11,7 @@ public class CrawlTaskPool {
 	public CrawlTaskPool() {
 		requests = new LinkedList<CrawlRequest>();
 		threads = new LinkedList<Thread>();
+        taskMutex = new CrawlerTaskMutex();
 	}
 
 	public void start() {

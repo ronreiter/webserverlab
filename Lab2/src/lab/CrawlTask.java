@@ -64,7 +64,7 @@ public class CrawlTask implements Runnable {
         if (robot.checkURLAllowed(task.urlToCrawl))
             queue.enqueueToDownload(crawlUrlAsResource);
 
-        //TODO: wait on queue
+        queue.waitUntilFinished();
 
         parent.taskMutex.unregister();
     }
