@@ -1,9 +1,11 @@
 package lab;
 
-import sun.font.CreatedFontTracker;
-
 import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,85 +15,52 @@ import java.net.UnknownHostException;
  * To change this template use File | Settings | File Templates.
  */
 public class Crawler {
-    private int Tasks = 0;
-    private int MAX_TASKS = 0;
-
     private static Crawler instance = null;
     public static final int STATUS_READY = 1;
     public static final int STATUS_BUSY = 2;
     public static final int ADD_STATUS_SUCCESS = 1;
     public static final int ADD_STATUS_RUNNING = 2;
     public static final int STATUS_ERROR_BAD_URL = 3;
+    public static final int STATUS_ERROR_UNKNOWN = 4;
 
-    private boolean singleTask = false;
-
-    CrawlerTaskPool taskPool;
+    CrawlerRequestQueue requestQueue;
+    List<CrawlRequest> requests;
 
     public Crawler() {
+        requestQueue = new CrawlerRequestQueue();
+        requests = new LinkedList<CrawlRequest>();
 
-        taskPool = new CrawlerTaskPool();
-        singleTask = false;
-        if (1 == ConfigManager.getInstance().getMaxCrawlerThreads())
-        {
-            singleTask = true;
-        }
     }
 
-    private String getDomainName(String URLToParse)
-    {
-        String [] ParsedURL = URLToParse.split("/");
-        switch (ParsedURL.length)
-        {
-            case (0):
-                    return ""; // TODO: BUGBUG - Get reiter error code
-            case (1):
-                if (ParsedURL[0].substring(0,3) == "http")
-                    return ""; // TODO: BUGBUG - get reiter error code
-                else
-                    return ParsedURL[0];
-                //BUGBUG - notice that if you remove the if/else then you must add:
-                //break;
-            case (2):
-                if (ParsedURL[0].substring(0,3) == "http")
-                {
-                    return ParsedURL[1];
-                } else
-                {
-                    return ParsedURL[0];
-                }
-                //BUGBUG - notice that if you remove the if/else then you must add:
-                //break;
-        }
-
-        return null;
-    }
-
-    private int createTask(String URLToAdd, boolean ignoreRobots)
+    private int createTask(String urlToAdd, boolean ignoreRobots)
     {
         try {
             // Check that the URL is valid
-            String domain = getDomainName(URLToAdd);
-            if (domain == "")
-            {
-                return STATUS_ERROR_BAD_URL;
-            }
+            URL url = new URL(urlToAdd);
 
-            InetAddress.getByName(domain);
+            // make sure the domain is valid
+            InetAddress.getByName(url.getHost());
 
             // Create the new Task
-            if (singleTask && (taskPool.getTaskCount() > 0))
+            if (requests.size() == ConfigManager.getInstance().getMaxCrawlerThreads())
             {
-                return STATUS_BUSY; // TODO: BUGBUG: Reiter to set up error codes
+                return STATUS_BUSY;
             }  else
             {
-                taskPool.enqueue(URLToAdd);
+                CrawlRequest request = new CrawlRequest(url, ignoreRobots);
+
+                requests.add(request);
+                requestQueue.enqueue(request);
             }
 
         } catch (UnknownHostException e) {
-            Logger.error("Failed parsing requested URL: " + URLToAdd);
+            Logger.error("Failed parsing requested URL: " + urlToAdd);
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             return STATUS_ERROR_BAD_URL;
+        } catch (MalformedURLException e) {
+            return STATUS_ERROR_BAD_URL;
         }
+
         return STATUS_READY;
     }
 
@@ -102,18 +71,19 @@ public class Crawler {
         }
         catch (RuntimeException e)
         {
-            return -1; // TODO: BUGBUG: Reiter to define error codes
+            return STATUS_ERROR_UNKNOWN;
         }
 
     }
 
     public int getStatus()
     {
-        if (MAX_TASKS == Tasks)
+        if (requests.size() == ConfigManager.getInstance().getMaxCrawlerThreads())
         {
-            return -1; // TODO: BUGBUG - Retier to define return error
+            return STATUS_BUSY;
         }
-        return -1;
+
+        return STATUS_READY;
     }
 
     public static Crawler getInstance() {

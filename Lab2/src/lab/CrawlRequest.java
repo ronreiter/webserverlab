@@ -1,5 +1,7 @@
 package lab;
 
+import java.net.URL;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Tamir
@@ -9,11 +11,11 @@ package lab;
  */
 public class CrawlRequest {
 
-    String URLToCrawl;
+    URL urlToCrawl;
     boolean ignoreRobots;
 
-    public CrawlRequest(String URLToCrawl, boolean ignoreRobots) {
-        this.URLToCrawl = URLToCrawl;
+    public CrawlRequest(URL urlToCrawl, boolean ignoreRobots) {
+        this.urlToCrawl = urlToCrawl;
         this.ignoreRobots = ignoreRobots;
     }
 }

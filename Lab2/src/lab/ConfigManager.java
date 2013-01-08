@@ -39,6 +39,13 @@ public class ConfigManager {
     public static String SCREEN_DEBUG_LEVEL_KEY = "screenDebugLevel";
 	public static int DEFAULT_SCREEN_DEBUG_LEVEL_VALUE = Logger.LOG_LEVEL_DEBUG;
 
+    public static String MAX_ANALYZERS_KEY = "maxAnalyzers";
+    public static int DEFAULT_MAX_ANALYZERS_VALUE = 2;
+
+    public static String MAX_DOWNLOADERS_KEY = "maxDownloaders";
+    public static int DEFAULT_MAX_DOWNLOADERS_VALUE = 10;
+
+
     private static ConfigManager manager;
     private Map<String, String> configuration;
     private File configFile;
@@ -136,7 +143,7 @@ public class ConfigManager {
 	public int getMaxThreads() {
 		return getIntParameter(MAX_THREADS_KEY);
 	}
-	
+
 	public void setMaxThreads(int maxThreads) {
 		setIntParameter(MAX_THREADS_KEY, maxThreads);
 	}
@@ -215,5 +222,21 @@ public class ConfigManager {
         }
         return manager;
     }
-	
+
+    public int getMaxAnalyzers() {
+        return getIntParameter(MAX_ANALYZERS_KEY);
+    }
+
+    public void setMaxAnalyzers(int threads) {
+        setIntParameter(MAX_ANALYZERS_KEY, threads);
+    }
+
+    public int getMaxDownloaders() {
+        return getIntParameter(MAX_DOWNLOADERS_KEY);
+    }
+
+    public void setMaxDownloaders(int threads) {
+        setIntParameter(MAX_DOWNLOADERS_KEY, threads);
+    }
+
 }
