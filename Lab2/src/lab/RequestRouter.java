@@ -22,7 +22,7 @@ public class RequestRouter {
         routes = new ArrayList<Route>();
 
         // TODO: routes.add(new Route(".*", null, FileRequestHandler));
-        // TODO: handle paramsinfo?
+        routes.add(new Route("/completed", null, new CompletedJobsRequestHandler()));
         routes.add(new Route("/", null, new CrawlerRequestHandler()));
         routes.add(new Route(".*", null, new FileRequestHandler()));
 	}

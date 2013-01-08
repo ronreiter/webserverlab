@@ -7,6 +7,17 @@
         input[type="text"] {
             box-sizing: content-box;
         }
+
+        .crawl-status {
+            list-style: none;
+            margin: 0;
+        }
+
+        .crawl-request p {
+            font-weight: bold;
+
+        }
+
     </style>
     <script src="/js/jquery.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
@@ -15,10 +26,10 @@
     <div class="navbar navbar-static-top">
         <div class="navbar-inner">
             <div class="container">
-                <a class="brand" href="#"><div class="icon-cloud-download"></div> Crawler</a>
+                <a class="brand" href="/"><div class="icon-cloud-download"></div> Crawler</a>
                 <ul class="nav">
-                    <li class="active"><a href="#">Home</a></li>
-                    <li><a href="/previous">Previous Jobs</a></li>
+                    <li class="active"><a href="/">Home</a></li>
+                    <li><a href="/completed">Completed Job Reports</a></li>
                 </ul>
             </div>
         </div>
@@ -52,7 +63,10 @@
             </div>
             <div class="span6">
                 <h3>Current status</h3>
-                {{ crawl_status }}
+                <ul class="crawl-status">
+                    {{ crawl_status }}
+                </ul>
+
             </div>
         </div>
     </div>

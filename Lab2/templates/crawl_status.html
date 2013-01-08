@@ -1,4 +1,4 @@
-<table class="crawl-request table table-striped">
+<table class="crawl-request table table-striped table-bordered">
     <thead>
         <tr colspan="2">
             <th>{{ domain }}</th>
@@ -12,7 +12,6 @@
         <tr><td>Pages crawled</td><td>{{ num_pages }} (total {{ total_size_pages }} bytes)</td></tr>
         <tr><td>Total links crawled</td><td>{{ num_links }}</td></tr>
         <tr><td>Average round trip time</td><td>{{ average_rtt }}</td></tr>
-        <tr><td>Total domains crawled</td><td>{{ num_domains }}</td></tr>
-        <tr><td colspan="2"><p>Connected domains</p>{{ connected_domains }}</td></tr>
+        <tr><td colspan="2"><p>Connected domains ({{ num_domains }})</p>{{ connected_domains }}</td></tr>
     </tbody>
 </table>
