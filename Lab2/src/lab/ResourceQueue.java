@@ -16,6 +16,7 @@ public class ResourceQueue {
 
     public void shutdown() {
         shutdown = true;
+        tasks.notifyAll();
     }
 
 	public void enqueue(Resource connection) {
@@ -32,8 +33,7 @@ public class ResourceQueue {
                 if (tasks.isEmpty()) {
                     threadsWaiting += 1;
                     if (maxThreads > 0 && maxThreads == threadsWaiting) {
-                        shutdown = true;
-                        tasks.notifyAll();
+                        shutdown();
                     }
 
                     if (shutdown) {
@@ -51,7 +51,12 @@ public class ResourceQueue {
 		}
 	}
 
-    public List<Resource> getQueue() {
-        return tasks;
+    public boolean isEmpty() {
+        return tasks.size() == 0;
     }
+
+    public boolean isFull() {
+        return tasks.size() == maxThreads && maxThreads > 0;
+    }
+
 }
