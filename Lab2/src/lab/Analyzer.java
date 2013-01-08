@@ -82,7 +82,7 @@ public class Analyzer implements Runnable {
         Pattern imgParser = Pattern.compile("<img.*?src\\s?=\\s?['\"](.*?)['\"].*?>");
 
         Matcher linkMatcher = linkParser.matcher(html);
-        if (linkMatcher.find()) {
+        while (linkMatcher.find()) {
             try {
                 links.add(relativeToAbsoluteLink(baseUrl, linkMatcher.group(1)));
             } catch (MalformedURLException e) {
@@ -91,7 +91,7 @@ public class Analyzer implements Runnable {
         }
 
         Matcher imgMatcher = imgParser.matcher(html);
-        if (imgMatcher.find()) {
+        while (imgMatcher.find()) {
             try {
                 links.add(relativeToAbsoluteLink(baseUrl, imgMatcher.group(1)));
             } catch (MalformedURLException e) {
