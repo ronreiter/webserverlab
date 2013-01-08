@@ -35,7 +35,11 @@ public class Downloader implements Runnable {
                     return;
                 }
 
+                long startTime = System.currentTimeMillis();
                 byte[] data = downloadUrl(toDownload.url);
+                long endTime = System.currentTimeMillis();
+
+                toDownload.rtt = endTime - startTime;
 
                 if (data == null) {
                     Logger.error("Couldn't download resource " + toDownload.url);
