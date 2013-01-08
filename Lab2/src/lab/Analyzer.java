@@ -114,7 +114,7 @@ public class Analyzer implements Runnable {
                 return Resource.TYPE_DOCUMENT;
             }
         }
-        return Resource.TYPE_OTHER;
+        return Resource.TYPE_PAGE;
     }
 
     // unit test

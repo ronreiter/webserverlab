@@ -48,7 +48,7 @@ public class ResourceQueue {
 			synchronized (threadsWaiting) {
                 if (queue.isEmpty()) {
                     threadsWaiting += 1;
-                    if (maxThreads > 0 && maxThreads == threadsWaiting) {
+                    if (maxThreads == threadsWaiting) {
                         shutdown();
                     }
 
