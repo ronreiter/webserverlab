@@ -11,8 +11,7 @@ public class CrawlTask implements Runnable {
     List<Thread> downloaders;
 
     // create the resource queue with a barrier - once all analyzers are waiting then release all of them
-    ResourceQueue toAnalyze = new ResourceQueue(ConfigManager.getInstance().getMaxAnalyzers());
-    ResourceQueue toDownload = new ResourceQueue(0);
+    ResourceQueue queue = new ResourceQueue(ConfigManager.getInstance().getMaxAnalyzers());
 
     public CrawlTask(CrawlTaskPool parent) {
         this.parent = parent;
@@ -21,14 +20,14 @@ public class CrawlTask implements Runnable {
 
         // create the analyzers thread pool
         for (int i = 0; i < ConfigManager.getInstance().getMaxCrawlerThreads(); i++) {
-            Thread thread = new Thread(new Analyzer(toAnalyze, toDownload));
+            Thread thread = new Thread(new Analyzer(queue));
             thread.run();
             this.analyzers.add(thread);
         }
 
         // create the downloaders thread pool
         for (int i = 0; i < ConfigManager.getInstance().getMaxCrawlerThreads(); i++) {
-            Thread thread = new Thread(new Downloader(toAnalyze, toDownload));
+            Thread thread = new Thread(new Downloader(queue));
             thread.run();
             this.downloaders.add(thread);
         }

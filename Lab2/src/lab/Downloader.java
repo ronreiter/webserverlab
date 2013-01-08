@@ -13,13 +13,11 @@ import java.net.URL;
  */
 public class Downloader implements Runnable {
 
-    private ResourceQueue analyzeQueue;
-    private ResourceQueue downloadQueue;
+    private ResourceQueue queue;
     private boolean shutdown = false;
 
-    public Downloader(ResourceQueue analyzeQueue, ResourceQueue downloadQueue) {
-        this.analyzeQueue = analyzeQueue;
-        this.downloadQueue = downloadQueue;
+    public Downloader(ResourceQueue queue) {
+        this.queue = queue;
     }
 
     public void shutdown() {
@@ -30,13 +28,17 @@ public class Downloader implements Runnable {
     public void run() {
         while (true) {
             try {
-                Resource toDownload = downloadQueue.dequeue();
+                Resource toDownload = queue.dequeueToDownload();
 
                 byte[] data = downloadUrl(toDownload.url);
 
                 Resource resource = new Resource();
                 resource.url = toDownload.url;
+
+
                 resource.body = data;
+                resource.length = data.length;
+
 
                 Logger.info("Downloaded resource " + resource.url + " total bytes: " + resource.body.length);
 
@@ -51,7 +53,7 @@ public class Downloader implements Runnable {
         }
     }
 
-    private byte[] downloadUrl(URL toDownload) {
+    public static byte[] downloadUrl(URL toDownload) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         try {
@@ -74,18 +76,17 @@ public class Downloader implements Runnable {
 
     // unit test
     public static void main(String[] args) throws MalformedURLException, InterruptedException {
-        ResourceQueue toAnalyze = new ResourceQueue(1);
-        ResourceQueue toDownload = new ResourceQueue(0);
+        ResourceQueue queue = new ResourceQueue(1);
 
         Resource res = new Resource();
         res.url = new URL("http://www.ynet.co.il");
-        toDownload.enqueue(res);
+        queue.enqueueToDownload(res);
 
-        Downloader downloader = new Downloader(toAnalyze, toDownload);
+        Downloader downloader = new Downloader(queue);
         downloader.shutdown();
         downloader.run();
 
-        assert toAnalyze.dequeue().body != null;
+        assert queue.dequeueToAnalyze().body != null;
 
     }
 }

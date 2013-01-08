@@ -11,4 +11,5 @@ public class Resource {
     public URL url;
     public byte[] body;
     public int type;
+    public int length;
 }

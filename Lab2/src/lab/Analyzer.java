@@ -14,19 +14,17 @@ public class Analyzer implements Runnable {
     public static final String[] VIDEO_EXTENSIONS = {"avi", "mpg", "mp4", "wmv", "mov", "flv", "swf"};
     public static final String[] DOCUMENT_EXTENSIONS = {"pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx"};
 
-    private ResourceQueue analyzeQueue;
-    private ResourceQueue downloadQueue;
+    private ResourceQueue queue;
 
-    public Analyzer(ResourceQueue analyzeQueue, ResourceQueue downloadQueue) {
-        this.analyzeQueue = analyzeQueue;
-        this.downloadQueue = downloadQueue;
+    public Analyzer(ResourceQueue queue) {
+        this.queue = queue;
     }
 
     @Override
     public void run() {
         while (true) {
             try {
-                Resource toAnalyze = analyzeQueue.dequeue();
+                Resource toAnalyze = queue.dequeueToAnalyze();
                 if (toAnalyze == null) {
                     Logger.info("Closing analyzer.");
                     return;
@@ -50,7 +48,7 @@ public class Analyzer implements Runnable {
 
                     Logger.info("Adding URL to download queue: " + resource.url + " type: " + resource.type);
 
-                    downloadQueue.enqueue(resource);
+                    queue.enqueueToDownload(resource);
                 }
 
             } catch (InterruptedException e) {
@@ -117,18 +115,17 @@ public class Analyzer implements Runnable {
 
     // unit test
     public static void main(String[] args) throws MalformedURLException, InterruptedException {
-        ResourceQueue toAnalyze = new ResourceQueue(1);
-        ResourceQueue toDownload = new ResourceQueue(0);
+        ResourceQueue queue = new ResourceQueue(1);
         Resource res = new Resource();
         res.body = "<a href='bar.html'>blat</a> blat <img src='http://www.google.com/image.png'/>".getBytes();
         res.url = new URL("http://www.example.com/foo");
-        toAnalyze.enqueue(res);
+        queue.enqueueToAnalyze(res);
 
-        Analyzer analyzer = new Analyzer(toAnalyze, toDownload);
+        Analyzer analyzer = new Analyzer(queue);
         analyzer.run();
 
-        assert toDownload.dequeue().url.toString().equals("http://www.example.com/foo/bar.html");
-        assert toDownload.dequeue().url.toString().equals("http://www.google.com/image.png");
+        assert queue.dequeueToDownload().url.toString().equals("http://www.example.com/foo/bar.html");
+        assert queue.dequeueToDownload().url.toString().equals("http://www.google.com/image.png");
 
     }
 
