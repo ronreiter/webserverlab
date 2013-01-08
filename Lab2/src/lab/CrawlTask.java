@@ -12,6 +12,7 @@ public class CrawlTask implements Runnable {
     public RobotsParser robot;
     List<Thread> analyzers;
     List<Thread> downloaders;
+    public CrawlRequest currentRequest;
 
     // create the resource queue with a barrier - when everyone waits for something to do, we know we need
     // to stop (which is why we limit the resource queue to the number of total threads)
@@ -73,8 +74,8 @@ public class CrawlTask implements Runnable {
     public void run() {
         while (true) {
             try {
-                CrawlRequest task = parent.dequeue();
-                processTask(task);
+                currentRequest = parent.dequeue();
+                processTask(currentRequest);
 
             } catch (InterruptedException e) {
                 Logger.error("Thread interrupted. Stopping");

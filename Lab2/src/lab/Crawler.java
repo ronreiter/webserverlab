@@ -78,7 +78,7 @@ public class Crawler {
     public int add(String URLToAdd, boolean ignoreRobots)
     {
         try {
-            return createTask(URLToAdd, ignoreRobots);
+                return createTask(URLToAdd, ignoreRobots);
         }
         catch (RuntimeException e)
         {
@@ -89,7 +89,7 @@ public class Crawler {
 
     public int getStatus()
     {
-        if (requests.size() == ConfigManager.getInstance().getMaxCrawlerThreads())
+        if (crawlTaskPool.taskMutex.count() >= ConfigManager.getInstance().getMaxCrawlerThreads())
         {
             return STATUS_BUSY;
         }
