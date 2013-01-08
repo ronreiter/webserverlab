@@ -55,7 +55,7 @@ public class CrawlerRequestHandler extends RequestHandler {
         StringBuilder crawlStatus = new StringBuilder();
         try {
             for (CrawlRequest crawlerRequest : crawler.getRequests()) {
-                crawlStatus.append("<li class='well'>");
+                crawlStatus.append("<li>");
                 crawlStatus.append(generateTemplateWithResults(crawlerRequest, "templates/crawl_status.html"));
                 crawlStatus.append("</li>");
             }
