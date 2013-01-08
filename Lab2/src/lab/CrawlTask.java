@@ -56,7 +56,7 @@ public class CrawlTask implements Runnable {
                 URL robotsURL = new URL(task.urlToCrawl.toString() + "/robots.txt");
                 byte [] robotsTxt = Downloader.downloadUrl(robotsURL);
                 if (null == robotsTxt) robot = new RobotsParser("");
-                else robot = new RobotsParser(robotsTxt.toString());
+                else robot = new RobotsParser(new String(robotsTxt));
             } catch (MalformedURLException e) {
                 Logger.error("Could not create robots.txt URL");
                 robot = new RobotsParser("");
