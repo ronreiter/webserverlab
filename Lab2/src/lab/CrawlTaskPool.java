@@ -6,6 +6,7 @@ public class CrawlTaskPool {
 	private final LinkedList<CrawlRequest> requests;
 	private LinkedList<Thread> threads;
 	private boolean stopServing;
+    public CrawlerTaskMutex taskMutex;
 
 	public CrawlTaskPool() {
 		requests = new LinkedList<CrawlRequest>();
@@ -37,7 +38,6 @@ public class CrawlTaskPool {
                 break;
             }
         }
-
 	}
 
 	public void enqueue(CrawlRequest connection) {

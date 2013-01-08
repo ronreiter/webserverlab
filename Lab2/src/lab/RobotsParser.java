@@ -20,6 +20,7 @@ public class RobotsParser {
         disallowedPaths = new LinkedList<String>();
         allowedPaths = new LinkedList<String>();
 
+        // parse robots file:
         for (String line : robotsFile.split("\n")) {
             if (line.startsWith("Disallow:")) {
                 disallowedPaths.add(line.split(":")[1].trim());

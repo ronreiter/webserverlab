@@ -15,9 +15,10 @@ public class Analyzer implements Runnable {
     public static final String[] DOCUMENT_EXTENSIONS = {"pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx"};
 
     private ResourceQueue queue;
-
-    public Analyzer(ResourceQueue queue) {
+    private CrawlTask parent;
+    public Analyzer(ResourceQueue queue, CrawlTask parent) {
         this.queue = queue;
+        this.parent = parent;
     }
 
     @Override
@@ -44,6 +45,11 @@ public class Analyzer implements Runnable {
                 for (URL url : urls) {
                     if (!url.getHost().equals(toAnalyze.url.getHost())) {
                         Logger.debug("Not downloading URL " + url.toString() + " because it is not in " + toAnalyze.url.getHost());
+                        continue;
+                    }
+
+                    if (parent != null && !parent.robot.checkURLAllowed(url)) {
+                        Logger.debug("Not downloading URL " + url.toString() + " because it's disallowed by robots.txt");
                         continue;
                     }
 
@@ -125,7 +131,8 @@ public class Analyzer implements Runnable {
         res.url = new URL("http://www.example.com/foo");
         queue.enqueueToAnalyze(res);
 
-        Analyzer analyzer = new Analyzer(queue);
+
+        Analyzer analyzer = new Analyzer(queue, null);
         analyzer.run();
 
         assert queue.dequeueToDownload().url.toString().equals("http://www.example.com/foo/bar.html");

@@ -1,12 +1,15 @@
 package lab;
 
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 
 public class CrawlTask implements Runnable {
 
     CrawlTaskPool parent;
+    public RobotsParser robot;
     List<Thread> analyzers;
     List<Thread> downloaders;
 
@@ -19,14 +22,14 @@ public class CrawlTask implements Runnable {
         this.downloaders = new LinkedList<Thread>();
 
         // create the analyzers thread pool
-        for (int i = 0; i < ConfigManager.getInstance().getMaxCrawlerThreads(); i++) {
-            Thread thread = new Thread(new Analyzer(queue));
+        for (int i = 0; i < ConfigManager.getInstance().getMaxAnalyzers(); i++) {
+            Thread thread = new Thread(new Analyzer(queue, this));
             thread.run();
             this.analyzers.add(thread);
         }
 
         // create the downloaders thread pool
-        for (int i = 0; i < ConfigManager.getInstance().getMaxCrawlerThreads(); i++) {
+        for (int i = 0; i < ConfigManager.getInstance().getMaxDownloaders(); i++) {
             Thread thread = new Thread(new Downloader(queue));
             thread.run();
             this.downloaders.add(thread);
@@ -35,7 +38,33 @@ public class CrawlTask implements Runnable {
 
     private void processTask(CrawlRequest task)
     {
+        parent.taskMutex.register();
 
+        if (task.ignoreRobots)
+        {
+            robot = new RobotsParser("");
+        } else {
+            try
+            {
+                URL robotsURL = new URL(task.urlToCrawl.toString() + "/robots.txt");
+                byte [] robotsTxt = Downloader.downloadUrl(robotsURL);
+                if (null == robotsTxt) robot = new RobotsParser("");
+                else robot = new RobotsParser(robotsTxt.toString());
+            } catch (MalformedURLException e) {
+                Logger.error("Could not create robots.txt URL");
+                robot = new RobotsParser("");
+            }
+        }
+
+        Resource crawlUrlAsResource = new Resource();
+        crawlUrlAsResource.url = task.urlToCrawl;
+
+        if (robot.checkURLAllowed(task.urlToCrawl))
+            queue.enqueueToDownload(crawlUrlAsResource);
+
+        //TODO: wait on queue
+
+        parent.taskMutex.unregister();
     }
 
     @Override
