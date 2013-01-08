@@ -93,4 +93,8 @@ public class Crawler {
 
         return instance;
     }
+
+    public List<CrawlRequest> getRequests() {
+        return requests;
+    }
 }
