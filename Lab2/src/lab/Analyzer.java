@@ -56,7 +56,6 @@ public class Analyzer implements Runnable {
                 return;
             }
         }
-
     }
 
     public List<URL> parseLinks(URL baseUrl, String html) {
