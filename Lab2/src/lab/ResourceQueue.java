@@ -15,6 +15,22 @@ public class ResourceQueue {
         this.maxThreads = maxThreads;
 	}
 
+    public void waitUntilFinished() {
+        synchronized (threadsWaiting) {
+            while (true) {
+                if (shutdown) {
+                    return;
+                }
+                try {
+                    threadsWaiting.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    return;
+                }
+            }
+        }
+    }
+
     public void shutdown() {
         shutdown = true;
         analyzeTasks.notifyAll();
