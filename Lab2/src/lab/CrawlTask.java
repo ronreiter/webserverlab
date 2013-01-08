@@ -3,8 +3,10 @@ package lab;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 public class CrawlTask implements Runnable {
 
@@ -13,6 +15,7 @@ public class CrawlTask implements Runnable {
     List<Thread> analyzers;
     List<Thread> downloaders;
     public CrawlRequest currentRequest;
+    Set<String> downloaded;
 
     // create the resource queue with a barrier - when everyone waits for something to do, we know we need
     // to stop (which is why we limit the resource queue to the number of total threads)
@@ -23,6 +26,7 @@ public class CrawlTask implements Runnable {
         this.parent = parent;
         this.analyzers = new LinkedList<Thread>();
         this.downloaders = new LinkedList<Thread>();
+        this.downloaded = new HashSet<String>();
 
         // create the analyzers thread pool
         for (int i = 0; i < ConfigManager.getInstance().getMaxAnalyzers(); i++) {
@@ -90,4 +94,11 @@ public class CrawlTask implements Runnable {
         }
     }
 
+    public boolean alreadyDownloaded(URL url) {
+        return downloaded.contains(url.toString());
+    }
+
+    public void markAsDownloaded(URL url) {
+        downloaded.add(url.toString());
+    }
 }
