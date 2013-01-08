@@ -40,9 +40,10 @@ public class CrawlTaskPool {
         }
 	}
 
-	public void enqueue(CrawlRequest connection) {
+	public void enqueue(CrawlRequest request) {
 		synchronized (requests) {
-			requests.add(connection);
+            request.progress = CrawlRequest.PROGRESS_WAITING_TO_START;
+			requests.add(request);
 			requests.notifyAll();
 		}
 	}
@@ -57,7 +58,9 @@ public class CrawlTaskPool {
                 if (requests.isEmpty()) {
 					requests.wait();
                 } else {
-					return requests.pop();
+                    CrawlRequest requestToReturn = requests.pop();
+                    requestToReturn.progress = CrawlRequest.PROGRESS_WORKING;
+					return requestToReturn;
 				}
 			}
 		}
