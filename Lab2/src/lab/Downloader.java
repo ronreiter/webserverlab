@@ -55,6 +55,7 @@ public class Downloader implements Runnable {
 
     public static byte[] downloadUrl(URL toDownload) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        Logger.info("Downloading url " + toDownload.toString());
 
         try {
             byte[] chunk = new byte[4096];
@@ -71,6 +72,7 @@ public class Downloader implements Runnable {
             return null;
         }
 
+        Logger.info("Finished downloading url " + toDownload.toString());
         return outputStream.toByteArray();
     }
 

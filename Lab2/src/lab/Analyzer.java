@@ -39,9 +39,14 @@ public class Analyzer implements Runnable {
                     continue;
                 }
 
-                Logger.debug("Number of links parsed: " + urls.size());
+                Logger.info("Number of links parsed from url " + urls.toString() + " is " + urls.size());
 
                 for (URL url : urls) {
+                    if (!url.getHost().equals(toAnalyze.url.getHost())) {
+                        Logger.debug("Not downloading URL " + url.toString() + " because it is not in " + toAnalyze.url.getHost());
+                        continue;
+                    }
+
                     Resource resource = new Resource();
                     resource.url = url;
                     resource.type = getURLType(url);
