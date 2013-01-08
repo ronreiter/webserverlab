@@ -20,7 +20,7 @@ public class ResourceQueue {
     public void waitUntilFinished() {
         synchronized (lock) {
             while (true) {
-                if (shutdown) {
+                if (maxThreads == threadsWaiting) {
                     return;
                 }
                 try {
