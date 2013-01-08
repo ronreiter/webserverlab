@@ -1,37 +1,50 @@
 package lab;
 
 
-/**
- * Created with IntelliJ IDEA.
- * User: ron
- * Date: 1/5/13
- * Time: 9:14 PM
- * To change this template use File | Settings | File Templates.
- */
+import java.util.LinkedList;
+import java.util.List;
+
 public class CrawlTask implements Runnable {
 
-    CrawlerTaskPool parent;
-    CrawlerTaskMutex taskMutex;
+    CrawlTaskPool parent;
+    List<Thread> analyzers;
+    List<Thread> downloaders;
 
-    public CrawlTask(CrawlerTaskPool parent, CrawlerTaskMutex taskMutex) {
+    // create the resource queue with a barrier - once all analyzers are waiting then release all of them
+    ResourceQueue toAnalyze = new ResourceQueue(ConfigManager.getInstance().getMaxAnalyzers());
+    ResourceQueue toDownload = new ResourceQueue(0);
+
+    public CrawlTask(CrawlTaskPool parent) {
         this.parent = parent;
-        this.taskMutex = taskMutex;
+        this.analyzers = new LinkedList<Thread>();
+        this.downloaders = new LinkedList<Thread>();
+
+        // create the analyzers thread pool
+        for (int i = 0; i < ConfigManager.getInstance().getMaxCrawlerThreads(); i++) {
+            Thread thread = new Thread(new Analyzer(toAnalyze, toDownload));
+            thread.run();
+            this.analyzers.add(thread);
+        }
+
+        // create the downloaders thread pool
+        for (int i = 0; i < ConfigManager.getInstance().getMaxCrawlerThreads(); i++) {
+            Thread thread = new Thread(new Downloader(toAnalyze, toDownload));
+            thread.run();
+            this.downloaders.add(thread);
+        }
     }
 
-    private void processTask(String task)
+    private void processTask(CrawlRequest task)
     {
-        taskMutex.register();
-        taskMutex.unregister();
+
     }
 
     @Override
     public void run() {
         while (true) {
-            String task;
-
             try {
-                task = parent.dequeue();
-                taskMutex.register();
+                CrawlRequest task = parent.dequeue();
+                processTask(task);
 
             } catch (InterruptedException e) {
                 Logger.error("Thread interrupted. Stopping");
@@ -39,19 +52,8 @@ public class CrawlTask implements Runnable {
             } catch (Exception e) {
                 Logger.error("Got exception while handling task");
                 e.printStackTrace();
-                continue;
             }
 
-            try {
-                processTask(task);
-
-            } catch (Exception e) {
-
-                Logger.error("Got exception while handling task");
-                e.printStackTrace();
-            } finally {
-                taskMutex.unregister();
-            }
         }
     }
 
