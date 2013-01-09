@@ -69,7 +69,18 @@ public class CrawlTask implements Runnable {
         }
 
         Resource crawlUrlAsResource = new Resource();
-        crawlUrlAsResource.url = task.urlToCrawl;
+        try {
+            if (task.urlToCrawl.getPort() == -1) {
+                crawlUrlAsResource.url = new URL(task.urlToCrawl.getProtocol() + "://" + task.urlToCrawl.getHost());
+            } else {
+                crawlUrlAsResource.url = new URL(task.urlToCrawl.getProtocol() + "://" + task.urlToCrawl.getHost() + ":" + task.urlToCrawl.getPort());
+            }
+
+        } catch (MalformedURLException e) {
+            Logger.error("Can't get the root URL link of URL " + task.urlToCrawl);
+            e.printStackTrace();
+            return;
+        }
 
         if (robot.checkURLAllowed(task.urlToCrawl))
             queue.enqueueToDownload(crawlUrlAsResource);

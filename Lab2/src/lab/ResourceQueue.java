@@ -43,6 +43,7 @@ public class ResourceQueue {
     }
 
     public Resource dequeueToAnalyze() throws InterruptedException {
+        Logger.info("Number of items left to analyze: " + downloadTasks.size());
         return dequeue(analyzeTasks);
     }
 
@@ -51,6 +52,7 @@ public class ResourceQueue {
     }
 
     public Resource dequeueToDownload() throws InterruptedException {
+        Logger.info("Number of items left to download: " + downloadTasks.size());
         return dequeue(downloadTasks);
     }
 

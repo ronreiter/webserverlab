@@ -72,6 +72,13 @@ are finished working on their current task.
 The CrawlTask waits for this event, and then uses the ResultFileGenerator to generate the HTML file to the reports
 page using the CrawlRequest data object.
 
+Note to checker
+----------------
+
+since the HTML reports are static (they are only static because the exercise specified that
+they need to have a date, which means they should be actual HTML files and not generated ones), then the linking
+process of domains to one another which have already been crawled is done one by one, meaning that the first domain
+will not be linked to the second HTML page, only the second HTML page will be linked to the first HTML page.
 
 
 
