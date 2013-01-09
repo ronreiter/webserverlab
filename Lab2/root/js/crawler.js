@@ -5,7 +5,6 @@ function updateStatus() {
         url: "/progress",
         dataType: "json",
         success: function(data) {
-            console.log(data);
             $(".crawl-status").html(template({domains: data}));
             setTimeout(updateStatus, 1000);
         }

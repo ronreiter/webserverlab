@@ -25,14 +25,19 @@ public class Analyzer implements Runnable {
     public void run() {
         while (true) {
             try {
+                // dequeue a task and start working on it
                 Resource toAnalyze = queue.dequeueToAnalyze();
+
+                // if shutting down, we get null.
                 if (toAnalyze == null) {
                     Logger.info("Analyzer shutting down.");
                     return;
                 }
 
+                // parse the URL and get the type (can also be done through the headers of the request
                 toAnalyze.type = getURLType(toAnalyze.url);
 
+                // add the request to the crawl statistics page
                 parent.currentRequest.addStat(toAnalyze);
 
                 // done analyzing stuff which isn't a page
@@ -40,48 +45,64 @@ public class Analyzer implements Runnable {
                     continue;
                 }
 
-                List<URL> urls = null;
-                try {
-                    urls = parseLinks(toAnalyze.url, new String(toAnalyze.body, "UTF-8"));
-                } catch (UnsupportedEncodingException e) {
-                    Logger.error("Error formatting body.");
-                    e.printStackTrace();
+                if (toAnalyze.body == null) {
+                    continue;
+                }
+
+                // get the links to parse from the body
+                List<URL> urls = parseLinks(toAnalyze.url, new String(toAnalyze.body, "UTF-8"));
+
+                if (urls == null) {
                     continue;
                 }
 
                 Logger.info("Number of links parsed from url " + urls.toString() + " is " + urls.size());
 
+                // for each link, add it to the download queue if needed
                 for (URL url : urls) {
+                    if (url == null) {
+                        continue;
+                    }
+
+                    // only download links from the current domain
                     if (!url.getHost().equals(toAnalyze.url.getHost())) {
                         Logger.debug("Not downloading from " + url.getHost() + " because it is not in " + toAnalyze.url.getHost());
                         parent.currentRequest.domainsConnected.add(url.getHost());
                         continue;
                     }
 
+                    // check if we're allowed to download this file according to our policy and the robots.txt file
                     if (parent != null && !parent.robot.checkURLAllowed(url)) {
                         Logger.debug("Not downloading URL " + url.toString() + " because it's disallowed by robots.txt");
                         continue;
                     }
 
+                    // don't redownload files
                     if (parent.alreadyDownloaded(url)) {
                         Logger.debug("Not downloading URL " + url.toString() + " because it's already been downloaded.");
                         continue;
                     }
 
+                    // mark we downloaded the URL, mark it as downloaded so we won't download it again
                     parent.markAsDownloaded(url);
 
+                    // create a new resource and fill it with the details of the link we found
                     Resource resource = new Resource();
                     resource.url = url;
                     resource.type = getURLType(url);
 
                     Logger.info("Adding URL to download queue: " + resource.url + " type: " + resource.type);
 
+                    // enqueue it to the download queue (this is done only to pages)
                     queue.enqueueToDownload(resource);
                 }
 
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 return;
+            } catch (UnsupportedEncodingException e) {
+                Logger.error("Error formatting body.");
+                e.printStackTrace();
             } finally {
                 queue.releaseResource();
             }
@@ -90,9 +111,12 @@ public class Analyzer implements Runnable {
 
     public List<URL> parseLinks(URL baseUrl, String html) {
         List<URL> links = new LinkedList<URL>();
+
+        // simple regular expressions to match a tags and img tags
         Pattern linkParser = Pattern.compile("<a.*?href\\s?=\\s?['\"](.*?)['\"].*?>");
         Pattern imgParser = Pattern.compile("<img.*?src\\s?=\\s?['\"](.*?)['\"].*?>");
 
+        // insert image tags to the result list
         Matcher imgMatcher = imgParser.matcher(html);
         while (imgMatcher.find()) {
             try {
@@ -102,6 +126,7 @@ public class Analyzer implements Runnable {
             }
         }
 
+        // insert all other links to the result list
         Matcher linkMatcher = linkParser.matcher(html);
         while (linkMatcher.find()) {
             try {
@@ -115,6 +140,7 @@ public class Analyzer implements Runnable {
     }
 
     public URL relativeToAbsoluteLink(URL baseUrl, String relativeLink) throws MalformedURLException {
+        // turn relative paths with a base URL to absolute, but also knows to accept absolute links
         if (relativeLink.startsWith("http")) {
             return new URL(relativeLink);
         }
@@ -123,6 +149,7 @@ public class Analyzer implements Runnable {
     }
 
     public int getURLType(URL url) {
+        // returns the type of URL according to the suffix (extension)
         for (String extension : IMAGE_EXTENSIONS) {
             if (url.toString().endsWith(extension)) {
                 return Resource.TYPE_IMAGE;
