@@ -10,14 +10,14 @@ package lab;
 public class Mutex {
     private int counter = 0;
 
-    public synchronized int register()
+    public synchronized int register(String whatAreYouDoing)
     {
-        Logger.debug("Crawler Task started got: " + (counter + 1) + " crawls running");
+        Logger.debug(whatAreYouDoing + " started got: " + (counter + 1) + " crawls running");
         return ++counter;
     }
-    public synchronized int unregister()
+    public synchronized int unregister(String whatAreYouDoing)
     {
-        Logger.debug("Crawler Task finished, got: " + (counter - 1) + " crawls running");
+        Logger.debug(whatAreYouDoing + " finished, got: " + (counter - 1) + " crawls running");
         return --counter;
     }
     public int count()

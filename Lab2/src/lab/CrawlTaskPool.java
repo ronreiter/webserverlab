@@ -60,9 +60,9 @@ public class CrawlTaskPool {
                 if (requests.isEmpty()) {
 					requests.wait();
                 } else {
+                    taskMutex.register("Crawl task");
                     CrawlRequest requestToReturn = requests.pop();
                     requestToReturn.progress = CrawlRequest.PROGRESS_WORKING;
-                    taskMutex.register();
                     requests.notifyAll();
 					return requestToReturn;
 				}

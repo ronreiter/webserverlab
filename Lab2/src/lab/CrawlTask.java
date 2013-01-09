@@ -23,7 +23,6 @@ public class CrawlTask implements Runnable {
         this.parent = parent;
         this.analyzers = new LinkedList<Thread>();
         this.downloaders = new LinkedList<Thread>();
-        this.downloaded = new HashSet<String>();
 
         // create the analyzers thread pool
         for (int i = 0; i < ConfigManager.getInstance().getMaxAnalyzers(); i++) {
@@ -44,13 +43,15 @@ public class CrawlTask implements Runnable {
 
     private void processTask(CrawlRequest task)
     {
+        this.downloaded = new HashSet<String>();
+
         if (task.ignoreRobots)
         {
             robot = new RobotsParser("");
         } else {
             try
             {
-                URL robotsURL = new URL(task.urlToCrawl.toString() + "/robots.txt");
+                URL robotsURL = new URL(task.urlToCrawl.getProtocol() + "://" + task.urlToCrawl.getHost() + ":" + task.urlToCrawl.getPort() + "/robots.txt");
                 byte [] robotsTxt = Downloader.downloadUrl(robotsURL);
                 if (null == robotsTxt) robot = new RobotsParser("");
                 else robot = new RobotsParser(new String(robotsTxt));
@@ -70,7 +71,7 @@ public class CrawlTask implements Runnable {
 
         Logger.debug("Tasked finished, releasing: " + task.urlToCrawl);
         task.progress = CrawlRequest.PROGRESS_FINISHED;
-        parent.taskMutex.unregister();
+        parent.taskMutex.unregister("Crawler Task");
     }
 
     @Override

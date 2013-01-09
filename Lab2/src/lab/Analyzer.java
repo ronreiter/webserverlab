@@ -82,8 +82,9 @@ public class Analyzer implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 return;
+            } finally {
+                queue.releaseResource();
             }
-            queue.resourceMutex.unregister();
         }
     }
 

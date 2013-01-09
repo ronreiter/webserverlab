@@ -19,6 +19,7 @@ public class ResourceQueue {
     public void waitUntilFinished() {
         synchronized (lock) {
             while (true) {
+                Logger.debug("Lock state: count: " + resourceMutex.count() + " analyze tasks: " + analyzeTasks.size() + " download tasks: " + downloadTasks.size());
                 if (0 == resourceMutex.count() && analyzeTasks.size() == 0 && downloadTasks.size() == 0) {
                     return;
                 }
@@ -73,13 +74,20 @@ public class ResourceQueue {
                     lock.wait();
                 } else {
 					Resource taskToReturn = queue.pop();
-                    resourceMutex.register();
+                    resourceMutex.register("Resource");
                     lock.notifyAll();
                     return taskToReturn;
 				}
 			}
 		}
 	}
+
+    public void releaseResource() {
+        synchronized (lock) {
+            resourceMutex.unregister("Resource");
+            lock.notifyAll();
+        }
+    }
 
 
 }

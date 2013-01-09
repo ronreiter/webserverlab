@@ -38,6 +38,8 @@ public class Crawler {
 
     private int createTask(String urlToAdd, boolean ignoreRobots)
     {
+        Logger.info("Creating new task, url: " + urlToAdd.toString() + ", ignore robots: " + ignoreRobots);
+
         try {
             URL url;
             // Check that the URL is valid
@@ -81,7 +83,7 @@ public class Crawler {
     public int add(String URLToAdd, boolean ignoreRobots)
     {
         try {
-                return createTask(URLToAdd, ignoreRobots);
+            return createTask(URLToAdd, ignoreRobots);
         }
         catch (RuntimeException e)
         {
