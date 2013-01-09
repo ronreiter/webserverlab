@@ -93,21 +93,21 @@ public class Analyzer implements Runnable {
         Pattern linkParser = Pattern.compile("<a.*?href\\s?=\\s?['\"](.*?)['\"].*?>");
         Pattern imgParser = Pattern.compile("<img.*?src\\s?=\\s?['\"](.*?)['\"].*?>");
 
-        Matcher linkMatcher = linkParser.matcher(html);
-        while (linkMatcher.find()) {
-            try {
-                links.add(relativeToAbsoluteLink(baseUrl, linkMatcher.group(1)));
-            } catch (MalformedURLException e) {
-                Logger.debug("malformed URL: " + linkMatcher.group(1));
-            }
-        }
-
         Matcher imgMatcher = imgParser.matcher(html);
         while (imgMatcher.find()) {
             try {
                 links.add(relativeToAbsoluteLink(baseUrl, imgMatcher.group(1)));
             } catch (MalformedURLException e) {
                 Logger.debug("malformed image: " + imgMatcher.group(1));
+            }
+        }
+
+        Matcher linkMatcher = linkParser.matcher(html);
+        while (linkMatcher.find()) {
+            try {
+                links.add(relativeToAbsoluteLink(baseUrl, linkMatcher.group(1)));
+            } catch (MalformedURLException e) {
+                Logger.debug("malformed URL: " + linkMatcher.group(1));
             }
         }
 

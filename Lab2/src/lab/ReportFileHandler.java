@@ -3,6 +3,8 @@ package lab;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 //import java.util.logging.LoggingMXBean;
@@ -13,16 +15,24 @@ public class ReportFileHandler extends FileRequestHandler {
             response.setStatus(403);
             return;
         }
-        if (!request.getHeaders().get("referer").contains("/completed")) {
+
+
+        URL referrer = null;
+        try {
+            referrer = new URL(request.getHeaders().get("referer"));
+        } catch (MalformedURLException e) {
             response.setStatus(403);
+            e.printStackTrace();
             return;
         }
-        if (!request.getHeaders().get("referer").contains("/reports")) {
+
+        if (!referrer.getPath().startsWith("/completed") && !referrer.getPath().startsWith("/reports")) {
+            Logger.info("Someone tried to access a report from a wrong referrer!");
             response.setStatus(403);
             return;
         }
 
-        super.get();
+       super.get();
 	}
 
 
