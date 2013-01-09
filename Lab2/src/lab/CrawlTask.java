@@ -31,6 +31,7 @@ public class CrawlTask implements Runnable {
         // create the analyzers thread pool
         for (int i = 0; i < ConfigManager.getInstance().getMaxAnalyzers(); i++) {
             Thread thread = new Thread(new Analyzer(queue, this));
+            thread.setName("Analyzer-" + (i+1));
             thread.start();
             this.analyzers.add(thread);
         }
@@ -38,6 +39,7 @@ public class CrawlTask implements Runnable {
         // create the downloaders thread pool
         for (int i = 0; i < ConfigManager.getInstance().getMaxDownloaders(); i++) {
             Thread thread = new Thread(new Downloader(queue));
+            thread.setName("Downloader-" + (i+1));
             thread.start();
             this.downloaders.add(thread);
         }

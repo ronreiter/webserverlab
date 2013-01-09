@@ -7,7 +7,7 @@ package lab;
  * Time: 12:26 AM
  * To change this template use File | Settings | File Templates.
  */
-public class CrawlerTaskMutex {
+public class Mutex {
     private int counter = 0;
 
     public synchronized int register()

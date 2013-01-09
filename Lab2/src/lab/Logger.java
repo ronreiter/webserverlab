@@ -46,12 +46,12 @@ public class Logger {
 
     public void logLine(String line, int level) {
         if (logFile != null && config.getFileDebugLevel() >= level) {
-            logFile.println(LOG_TAGS[level] + ": " + line);
+            logFile.println(LOG_TAGS[level] + " (" + Thread.currentThread().getName() + "): " + line);
             logFile.flush();
         }
 
         if (config.getScreenDebugLevel() >= level) {
-            System.err.println(LOG_TAGS[level] + ": " + line);
+            System.err.println(LOG_TAGS[level] + "(" + Thread.currentThread().getName() + "): " + line);
         }
     }
 

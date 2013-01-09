@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 public class CrawlerRequestHandler extends RequestHandler {
 	public static final String CRAWLER_TEMPLATE = "templates/index.html";
     private Crawler crawler;

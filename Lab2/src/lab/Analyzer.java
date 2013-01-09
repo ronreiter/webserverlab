@@ -77,6 +77,7 @@ public class Analyzer implements Runnable {
                 e.printStackTrace();
                 return;
             }
+            queue.resourceMutex.unregister();
         }
     }
 

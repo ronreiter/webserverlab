@@ -41,22 +41,24 @@ public class Downloader implements Runnable {
                 long endTime = System.currentTimeMillis();
                 byte[] data = null;
 
-                if (length == 0) {
+                Resource resource = new Resource();
+
+                if (length == -1) {
                     data = downloadUrl(toDownload.url);
 
                     if (null == data) {
                         Logger.error("Couldn't download resource " + toDownload.url);
                         continue;
                     }
+
+                    resource.length = data.length;
+                } else {
+                    resource.length = length;
                 }
 
-
-                Resource resource = new Resource();
                 resource.url = toDownload.url;
                 resource.rtt = endTime - startTime;
                 resource.body = data;
-                resource.length = data.length;
-
 
                 Logger.info("Downloaded resource " + resource.url + " total bytes: " + resource.body.length);
 
@@ -71,6 +73,9 @@ public class Downloader implements Runnable {
                 e.printStackTrace();
                 return;
             }
+
+            queue.resourceMutex.unregister();
+
         }
     }
 
@@ -79,7 +84,8 @@ public class Downloader implements Runnable {
             HttpURLConnection.setFollowRedirects(true);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("HEAD");
-            return Long.parseLong(con.getHeaderField("content-length"));
+            Logger.debug("Got content length from HEAD request: " + con.getContentLength());
+            return con.getContentLength();
         }
         catch (Exception e) {
             e.printStackTrace();

@@ -6,12 +6,12 @@ public class CrawlTaskPool {
 	private final LinkedList<CrawlRequest> requests;
 	private LinkedList<Thread> threads;
 	private boolean stopServing;
-    public CrawlerTaskMutex taskMutex;
+    public Mutex taskMutex;
 
 	public CrawlTaskPool() {
 		requests = new LinkedList<CrawlRequest>();
 		threads = new LinkedList<Thread>();
-        taskMutex = new CrawlerTaskMutex();
+        taskMutex = new Mutex();
 	}
 
 	public void start() {
@@ -20,6 +20,7 @@ public class CrawlTaskPool {
         int numThreads = ConfigManager.getInstance().getMaxCrawlerThreads();
         for (int i = 0; i < numThreads; i++) {
             Thread newThread = new Thread(new CrawlTask(this));
+            newThread.setName("Crawler-" + (i+1));
             threads.add(newThread);
             newThread.start();
         }

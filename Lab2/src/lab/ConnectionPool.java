@@ -20,6 +20,7 @@ public class ConnectionPool {
         int numThreads = ConfigManager.getInstance().getMaxThreads();
         for (int i = 0; i < numThreads; i++) {
             Thread newThread = new Thread(new ConnectionHandler(this));
+            newThread.setName("Connection-" + (i+1));
             threads.add(newThread);
             newThread.start();
         }
