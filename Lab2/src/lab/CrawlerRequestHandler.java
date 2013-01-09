@@ -1,5 +1,6 @@
 package lab;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -27,11 +28,27 @@ public class CrawlerRequestHandler extends RequestHandler {
 
     }
 
+    public static String getCrawledDomainReport(String domain) {
+        File folder = new File(new File("root"), "reports");
+        for (File file : folder.listFiles()) {
+            if (file.getName().startsWith(domain)) {
+                return file.getName();
+            }
+        }
+
+        return null;
+    }
+
     public static String generateTemplateWithResults(CrawlRequest crawlRequest, String templateFileName) throws IOException {
         StringBuilder domainListBuilder = new StringBuilder();
 
         for (String domain : crawlRequest.domainsConnected) {
-            domainListBuilder.append("<li>").append(domain).append("</li>\n");
+            String crawledDomainReport = getCrawledDomainReport(domain);
+            if (crawledDomainReport != null) {
+                domainListBuilder.append("<li><a href='/reports/" + crawledDomainReport + "'>").append(domain).append("</a></li>\n");
+            } else {
+                domainListBuilder.append("<li>").append(domain).append("</li>\n");
+            }
         }
 
         String progressString = null;

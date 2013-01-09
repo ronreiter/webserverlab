@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,6 +14,8 @@ import java.net.URL;
  * To change this template use File | Settings | File Templates.
  */
 public class Downloader implements Runnable {
+    public static final int CONNECT_TIMEOUT = 30000;
+    public static final int READ_TIMEOUT = 30000;
 
     private ResourceQueue queue;
     private boolean shutdown = false;
@@ -99,7 +102,13 @@ public class Downloader implements Runnable {
         try {
             byte[] chunk = new byte[4096];
             int bytesRead;
-            InputStream stream = toDownload.openStream();
+
+            URLConnection con = toDownload.openConnection();
+            con.setConnectTimeout(CONNECT_TIMEOUT);
+            con.setReadTimeout(READ_TIMEOUT);
+            InputStream stream = con.getInputStream();
+
+            // InputStream stream = toDownload.openStream();
 
             while ((bytesRead = stream.read(chunk)) > 0) {
                 outputStream.write(chunk, 0, bytesRead);

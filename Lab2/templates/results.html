@@ -12,82 +12,26 @@
     <script src="/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <div class="navbar navbar-static-top">
-        <div class="navbar-inner">
-            <div class="container">
-                <a class="brand" href="/"><div class="icon-cloud-download"></div> Crawler</a>
-                <ul class="nav">
-                    <li class="active"><a href="/">Home</a></li>
-                    <li><a href="/completed">Completed Job Reports</a></li>
-                </ul>
-            </div>
-        </div>
-    </div>
     <div class="container">
-        <div style="margin-top: 30px">
-            {{ run_status }}
-        </div>
         <div class="span12">
-            <h3>Crawl results for domain - {{ domain }}</h3>
-            <form class="form-horizontal">
-                <div class="control-group">
-                    <label class="control-label">Robots.txt respected</label>
-                    <div class="controls">{{ robots }}</div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label">Number of images</label>
-                    <div class="controls">{{ num_images }}</div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label">Total size of images</label>
-                    <div class="controls">{{ total_size_images }}</div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label">Number of videos</label>
-                    <div class="controls">{{ num_videos }}</div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label">Total size of videos</label>
-                    <div class="controls">{{ total_size_videos }}</div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label">Number of documents</label>
-                    <div class="controls">{{ num_documents }}</div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label">Total size of documents</label>
-                    <div class="controls">{{ total_size_documents }}</div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label">Pages visited</label>
-                    <div class="controls">{{ num_pages }}</div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label">Total size of pages</label>
-                    <div class="controls">{{ total_size_pages }}</div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label">Number of links</label>
-                    <div class="controls">{{ num_links }}</div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label">Number of domains connected to</label>
-                    <div class="controls">{{ num_domains }}</div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label">Connected domains</label>
-                    <div class="controls">
-                        <ul class="connected-domains">
-                            {{ connected_domains }}
-                        </ul>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label">Average RTT (latency)</label>
-                    <div class="controls">{{ average_rtt }}</div>
-                </div>
-
-            </form>
+            <table class="crawl-request table table-striped table-bordered">
+                <thead>
+                <tr colspan="2">
+                    <th><h3>{{ domain }}</h3></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr><td>Progress</td><td>{{ progress }}</td></tr>
+                <tr><td>Robots.txt ignored</td><td>{{ robots }}</td></tr>
+                <tr><td>Images crawled</td><td>{{ num_images }} (total {{ total_size_images }} bytes)</td></tr>
+                <tr><td>Videos crawled</td><td>{{ num_videos }} (total {{ total_size_videos }} bytes)</td></tr>
+                <tr><td>Documents crawled</td><td>{{ num_documents }} (total {{ total_size_documents }} bytes)</td></tr>
+                <tr><td>Pages crawled</td><td>{{ num_pages }} (total {{ total_size_pages }} bytes)</td></tr>
+                <tr><td>Total links crawled</td><td>{{ num_links }}</td></tr>
+                <tr><td>Average round trip time</td><td>{{ average_rtt }}</td></tr>
+                <tr><td colspan="2"><p>Connected domains ({{ num_domains }})</p>{{ connected_domains }}</td></tr>
+                </tbody>
+            </table>
 
         </div>
     </div>

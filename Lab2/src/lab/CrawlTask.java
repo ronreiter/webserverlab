@@ -1,6 +1,7 @@
 package lab;
 
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
@@ -72,6 +73,14 @@ public class CrawlTask implements Runnable {
         Logger.debug("Tasked finished, releasing: " + task.urlToCrawl);
         task.progress = CrawlRequest.PROGRESS_FINISHED;
         parent.taskMutex.unregister("Crawler Task");
+
+        ResultFileGenerator resultFileGenerator = new ResultFileGenerator(task.urlToCrawl);
+        try {
+            resultFileGenerator.writeFile(currentRequest);
+        } catch (IOException e) {
+            Logger.error("Couldn't write result file for url: " + task.urlToCrawl.toString());
+            e.printStackTrace();
+        }
     }
 
     @Override

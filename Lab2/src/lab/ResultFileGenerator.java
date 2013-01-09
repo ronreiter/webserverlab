@@ -22,10 +22,8 @@ public class ResultFileGenerator {
     public ResultFileGenerator(URL crawlURL) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
         date = new Date();
-        outputFile = new File("root", crawlURL.getHost() + "_" + dateFormat.format(date) + ".html");
+        outputFile = new File(new File("root", "reports"), crawlURL.getHost() + "_" + dateFormat.format(date) + ".html");
     }
-
-
 
     public void writeFile(CrawlRequest crawlRequest) throws IOException {
         String renderedTemplate = CrawlerRequestHandler.generateTemplateWithResults(crawlRequest, "templates/results.html");
