@@ -22,6 +22,7 @@ public class RequestRouter {
         routes = new ArrayList<Route>();
 
         // TODO: routes.add(new Route(".*", null, FileRequestHandler));
+        routes.add(new Route("/reports/.*", null, new ReportFileHandler()));
         routes.add(new Route("/progress", null, new CrawlerRequestsJSONHandler()));
         routes.add(new Route("/completed", null, new CompletedJobsRequestHandler()));
         routes.add(new Route("/", null, new CrawlerRequestHandler()));
