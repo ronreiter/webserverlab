@@ -173,7 +173,7 @@ public class CrawlerRequestHandler extends RequestHandler {
         if (addStatus == Crawler.ADD_STATUS_SUCCESS) {
             templateValues.put("run_status", "<div class='alert alert-success'>Crawler started successfully</div>");
         } else if (addStatus == Crawler.ADD_STATUS_RUNNING) {
-            templateValues.put("run_status", "<div class='alert alert-warn'>Crawler already running</div>");
+            templateValues.put("run_status", "<div class='alert alert-error'>Crawler already running (at maximum capacity)!</div>");
         } else if (addStatus == Crawler.STATUS_ERROR_BAD_URL) {
             templateValues.put("run_status", "<div class='alert alert-error'>Bad URL!</div>");
         } else if (addStatus == Crawler.STATUS_ERROR_UNKNOWN_HOST) {

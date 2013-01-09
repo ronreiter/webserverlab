@@ -7,24 +7,22 @@ public class ResourceQueue {
     private final LinkedList<Resource> downloadTasks;
     private boolean shutdown = false;
     public Mutex resourceMutex;
-    private Object lock = null;
 
 	public ResourceQueue() {
 		this.analyzeTasks = new LinkedList<Resource>();
         this.downloadTasks = new LinkedList<Resource>();
         this.resourceMutex = new Mutex();
-        this.lock = new Object();
 	}
 
     public void waitUntilFinished() {
-        synchronized (lock) {
+        synchronized (resourceMutex) {
             while (true) {
                 Logger.debug("Lock state: count: " + resourceMutex.count() + " analyze tasks: " + analyzeTasks.size() + " download tasks: " + downloadTasks.size());
                 if (0 == resourceMutex.count() && analyzeTasks.size() == 0 && downloadTasks.size() == 0) {
                     return;
                 }
                 try {
-                    lock.wait();
+                    resourceMutex.wait();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     return;
@@ -35,8 +33,8 @@ public class ResourceQueue {
 
     public void shutdown() {
         shutdown = true;
-        synchronized (lock) {
-            lock.notifyAll();
+        synchronized (resourceMutex) {
+            resourceMutex.notifyAll();
         }
     }
 
@@ -57,25 +55,25 @@ public class ResourceQueue {
     }
 
     private void enqueue(LinkedList<Resource> queue, Resource resource) {
-		synchronized (lock) {
+		synchronized (resourceMutex) {
 			queue.add(resource);
-            lock.notifyAll();
+            resourceMutex.notifyAll();
 		}
 	}
 	
 	private Resource dequeue(LinkedList<Resource> queue) throws InterruptedException {
 		while (true) {
-			synchronized (lock) {
+			synchronized (resourceMutex) {
                 if (queue.isEmpty()) {
                     if (shutdown) {
                         return null;
                     }
 
-                    lock.wait();
+                    resourceMutex.wait();
                 } else {
 					Resource taskToReturn = queue.pop();
                     resourceMutex.register("Resource");
-                    lock.notifyAll();
+                    resourceMutex.notifyAll();
                     return taskToReturn;
 				}
 			}
@@ -83,9 +81,9 @@ public class ResourceQueue {
 	}
 
     public void releaseResource() {
-        synchronized (lock) {
+        synchronized (resourceMutex) {
             resourceMutex.unregister("Resource");
-            lock.notifyAll();
+            resourceMutex.notifyAll();
         }
     }
 

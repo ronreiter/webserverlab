@@ -52,7 +52,13 @@ public class CrawlTask implements Runnable {
         } else {
             try
             {
-                URL robotsURL = new URL(task.urlToCrawl.getProtocol() + "://" + task.urlToCrawl.getHost() + ":" + task.urlToCrawl.getPort() + "/robots.txt");
+                URL robotsURL;
+                if (task.urlToCrawl.getPort() == -1) {
+                    robotsURL = new URL(task.urlToCrawl.getProtocol() + "://" + task.urlToCrawl.getHost() + "/robots.txt");
+                } else {
+                    robotsURL = new URL(task.urlToCrawl.getProtocol() + "://" + task.urlToCrawl.getHost() + ":" + task.urlToCrawl.getPort() + "/robots.txt");
+                }
+
                 byte [] robotsTxt = Downloader.downloadUrl(robotsURL);
                 if (null == robotsTxt) robot = new RobotsParser("");
                 else robot = new RobotsParser(new String(robotsTxt));

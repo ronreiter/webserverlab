@@ -1,0 +1,87 @@
+
+
+      __
+     /  l
+   .'   :               __.....__..._  ____
+  /  /   \          _.-"        "-.  ""    "-.
+ (`-: .---:    .--.'          _....J.         "-.
+  """y     \,.'    \  __..--""       `+""--.     `.
+    :     .'/    .-"""-. _.            `.   "-.    `._.._
+    ;  _.'.'  .-j       `.               \     "-.   "-._`.
+    :    / .-" :          \  `-.          `-      "-.      \
+     ;  /.'    ;          :;               ."        \      `,
+     :_:/      ::\        ;:     (        /   .-"   .')      ;
+       ;-"      ; "-.    /  ;           .^. .'    .' /    .-"
+      /     .-  :    `. '.  : .- / __.-j.'.'   .-"  /.---'
+     /  /      `,\.  .'   "":'  /-"   .'       \__.'
+    :  :         ,\""       ; .'    .'      .-""
+   _J  ;         ; `.      /.'    _/    \.-"
+  /  "-:        /"--.b-..-'     .'       ;
+ /     /  ""-..'            .--'.-'/  ,  :           _____           _                    _   ___
+:`.   :     / :             `-i" ,',_:  _ \         |_   _|_ _ _ __ (_)_ _   __ _ _ _  __| | | _ \___ _ _
+:  \  '._  :__;             .'.-"; ; ; j `.l          | |/ _` | '  \| | '_| / _` | ' \/ _` | |   / _ \ ' \
+ \  \          "-._         `"  :_/ :_/               |_|\__,_|_|_|_|_|_|   \__,_|_||_\__,_| |_|_\___/_||_|
+  `.;\             "-._
+    :_"-._             "-.
+      `.  l "-.     )     `.
+        ""^--""^-. :        \
+                  ";         \
+                  :           `._
+                  ; /    \ `._   ""---.
+                 / /   _      `.--.__.'
+                : :   / ;  :".  \
+                ; ;  :  :  ;  `. `.
+               /  ;  :   ; :    `. `.
+              /  /:  ;   :  ;     "-'
+             :_.' ;  ;    ; :
+                 /  /     :_l
+                 `-'
+
+
+=======
+Bonuses
+=======
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+HTTP Web Server Bonuses (from lab1)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+1. HTTP/1.1 support - both Host header support and connection keep-alive support
+
+2  Virtual servers support (different domains for the same server)
+	To enable this just change in the config.ini file the multipleSites=no to multipleSites=yes (or use bonus number 4 sample request)
+	Note that the original "site" won't be available and that a directory needs to be created for every new domain.
+	To test you can just edit C:\Windows\System32\Drivers\etc\hosts to make sure www.a.com will point to your computer's IP
+
+3. Thread pool 
+	- in order to be efficient we have a thread pool that dequeues requests. this way threads are always up and ready to go.
+
+4. Remote Configuration 
+	- the server can be configured from remote. In order to configure it you must include the password 
+	default password is 'weakpass'. 
+	add the 'pass' parameter in the get/post request (e.g. pass=weakpass) in order to be able to configure.
+	you can configure the following paramters:
+
+		Configuration		paramter		sample value
+		============================================================
+		Server Port 		port			8080
+		Manager Password 	managerPassword		weakpass
+		Virtual servers 	multipleSites		yes
+		Maximum Threads		maxThreads		10
+		Default Page		defaultPage		index.html
+		Server root directory	root			root
+
+	sample request: http://localhost:8080/serverConfig?pass=weakpass&multipleSites=yes
+	The sample request will enable bonus #2 :)
+
+5. Logger with 5 logging levels
+	The logger lets you log anything you wish with the relevant level (error, warning, etc). 
+	The logger will print on the screen everything over a certain log level (according to what's configured in the config.ini file as screenDebugLevel)
+
+
+~~~~~~~~~~~~~~~~~~~
+Web Crawler bonuses
+~~~~~~~~~~~~~~~~~~~
+
+1. Crawler thread pool - allows executing more than one thread at a time.

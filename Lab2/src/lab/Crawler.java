@@ -64,17 +64,24 @@ public class Crawler {
                 CrawlRequest request = new CrawlRequest(url, ignoreRobots);
                 crawlTaskPool.enqueue(request);
                 requests.add(request);
+
+                // wait 1 second so we'll get the updated status
+                Thread.sleep(100);
+
             } else {
-                Logger.critical("!!! More crawler tasks than allowed !!!");
+                Logger.critical("More crawler tasks than allowed!");
                 return STATUS_ERROR_UNKNOWN;
             }
 
         } catch (UnknownHostException e) {
-            Logger.error("Failed parsing requested URL: " + urlToAdd);
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
             return STATUS_ERROR_UNKNOWN_HOST;
         } catch (MalformedURLException e) {
+            e.printStackTrace();
             return STATUS_ERROR_BAD_URL;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return STATUS_ERROR_UNKNOWN;
         }
 
         return STATUS_READY;
