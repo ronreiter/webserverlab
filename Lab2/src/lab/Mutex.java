@@ -12,12 +12,12 @@ public class Mutex {
 
     public synchronized int register(String whatAreYouDoing)
     {
-        Logger.debug(whatAreYouDoing + " started got: " + (counter + 1) + " crawls running");
+        Logger.debug(whatAreYouDoing + " started got: " + (counter + 1) + " " + whatAreYouDoing + " jobs running");
         return ++counter;
     }
     public synchronized int unregister(String whatAreYouDoing)
     {
-        Logger.debug(whatAreYouDoing + " finished, got: " + (counter - 1) + " crawls running");
+        Logger.debug(whatAreYouDoing + " finished, got: " + (counter - 1) + " " + whatAreYouDoing + " jobs running");
         return --counter;
     }
     public int count()
