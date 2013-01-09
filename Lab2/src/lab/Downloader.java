@@ -60,7 +60,7 @@ public class Downloader implements Runnable {
                 resource.rtt = endTime - startTime;
                 resource.body = data;
 
-                Logger.info("Downloaded resource " + resource.url + " total bytes: " + resource.body.length);
+                Logger.info("Downloaded resource " + resource.url + " total bytes: " + resource.length);
 
                 queue.enqueueToAnalyze(resource);
 

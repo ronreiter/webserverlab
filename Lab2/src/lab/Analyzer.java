@@ -35,6 +35,11 @@ public class Analyzer implements Runnable {
 
                 parent.currentRequest.addStat(toAnalyze);
 
+                // done analyzing stuff which isn't a page
+                if (toAnalyze.type != Resource.TYPE_PAGE) {
+                    continue;
+                }
+
                 List<URL> urls = null;
                 try {
                     urls = parseLinks(toAnalyze.url, new String(toAnalyze.body, "UTF-8"));
