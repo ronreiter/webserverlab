@@ -18,10 +18,13 @@ public class CrawlerRequestHandler extends RequestHandler {
     }
 
     public void setCrawlerStatus(Map<String, Object> templateValues) {
+        String statusString = crawler.crawlTaskPool.taskMutex.count() + " out of " +
+                ConfigManager.getInstance().getMaxCrawlerThreads() + " crawler threads are busy.";
+
         if (crawler.getStatus() == Crawler.STATUS_READY) {
-            templateValues.put("status", "<div class='alert alert-success'>Crawler is ready to run</div>");
+            templateValues.put("status", "<div class='alert alert-success'>Crawler is ready to run - " + statusString + "</div>");
         } else if (crawler.getStatus() == Crawler.STATUS_BUSY) {
-            templateValues.put("status", "<div class='alert alert-warn'>Crawler is busy</div>");
+            templateValues.put("status", "<div class='alert alert-warn'>Crawler is busy - " + statusString + "</div>");
         } else {
             templateValues.put("status", "");
         }
