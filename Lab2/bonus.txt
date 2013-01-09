@@ -77,11 +77,20 @@ HTTP Web Server Bonuses (from lab1)
 
 5. Logger with 5 logging levels
 	The logger lets you log anything you wish with the relevant level (error, warning, etc). 
-	The logger will print on the screen everything over a certain log level (according to what's configured in the config.ini file as screenDebugLevel)
+	The logger will print on the screen everything over a certain log level (according to what's configured in the
+	config.ini file as screenDebugLevel)
 
 
 ~~~~~~~~~~~~~~~~~~~
 Web Crawler bonuses
 ~~~~~~~~~~~~~~~~~~~
 
-1. Crawler thread pool - allows executing more than one thread at a time.
+1. Crawler thread pool - allows executing more than one crawl job at a time. Each crawler has its own analyzer and
+downloader thread pools. Number of crawler threads is also configurable through the configuration.
+
+2. Twitter bootstrap user interface
+
+3. Real-time crawler status using AJAX polling. The server has a JSON endpoint which returns all server tasks.
+    Using jQuery and Handlebars.js templating, the web client actively polls the server every second, and renders
+    the status to the user by parsing the JSON data.
+
