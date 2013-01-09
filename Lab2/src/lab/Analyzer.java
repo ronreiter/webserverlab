@@ -65,6 +65,7 @@ public class Analyzer implements Runnable {
 
                     if (parent.alreadyDownloaded(url)) {
                         Logger.debug("Not downloading URL " + url.toString() + " because it's already been downloaded.");
+                        continue;
                     }
 
                     parent.markAsDownloaded(url);

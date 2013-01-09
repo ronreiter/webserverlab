@@ -50,15 +50,19 @@ public class CrawlRequest {
             case Resource.TYPE_DOCUMENT:
                 totalDocuments += 1;
                 totalDocumentsBytes += resource.length;
+                break;
             case Resource.TYPE_IMAGE:
                 totalImages += 1;
                 totalImagesBytes += resource.length;
+                break;
             case Resource.TYPE_VIDEO:
                 totalVideos += 1;
                 totalVideosBytes += resource.length;
+                break;
             case Resource.TYPE_PAGE:
                 totalPages += 1;
                 totalPagesBytes += resource.length;
+                break;
         }
 
     }
