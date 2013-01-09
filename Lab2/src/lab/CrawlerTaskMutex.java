@@ -10,12 +10,12 @@ package lab;
 public class CrawlerTaskMutex {
     private int counter = 0;
 
-    public int register()
+    public synchronized int register()
     {
         Logger.debug("Crawler Task started got: " + (counter + 1) + " crawls running");
         return ++counter;
     }
-    public int unregister()
+    public synchronized int unregister()
     {
         Logger.debug("Crawler Task finished, got: " + (counter - 1) + " crawls running");
         return --counter;

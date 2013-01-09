@@ -30,6 +30,9 @@ public class Analyzer implements Runnable {
                     Logger.info("Analyzer shutting down.");
                     return;
                 }
+
+                toAnalyze.type = getURLType(toAnalyze.url);
+
                 parent.currentRequest.addStat(toAnalyze);
 
                 List<URL> urls = null;

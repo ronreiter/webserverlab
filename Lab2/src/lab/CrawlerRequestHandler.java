@@ -29,6 +29,22 @@ public class CrawlerRequestHandler extends RequestHandler {
             domainListBuilder.append("<li>").append(domain).append("</li>\n");
         }
 
+        String progressString = null;
+        switch (crawlRequest.progress) {
+            case CrawlRequest.PROGRESS_NEW:
+                progressString = "New";
+                break;
+            case CrawlRequest.PROGRESS_WAITING_TO_START:
+                progressString = "Waiting to start";
+                break;
+            case CrawlRequest.PROGRESS_WORKING:
+                progressString = "Working";
+                break;
+            case CrawlRequest.PROGRESS_FINISHED:
+                progressString = "Finished";
+                break;
+        }
+
         Map<String, Object> templateValues = new HashMap<String, Object>();
         templateValues.put("domain", crawlRequest.urlToCrawl.getHost());
         templateValues.put("robots", crawlRequest.ignoreRobots ? "Yes" : "No");
@@ -44,7 +60,7 @@ public class CrawlerRequestHandler extends RequestHandler {
         templateValues.put("num_domains", crawlRequest.domainsConnected.size());
         templateValues.put("connected_domains", domainListBuilder.toString());
         templateValues.put("average_rtt", crawlRequest.averageRTT);
-        templateValues.put("progress", crawlRequest.progress);
+        templateValues.put("progress", progressString);
 
         String resultsTemplate = RequestHandler.readFile(templateFileName);
 
@@ -125,6 +141,8 @@ public class CrawlerRequestHandler extends RequestHandler {
             templateValues.put("run_status", "<div class='alert alert-warn'>Crawler already running</div>");
         } else if (addStatus == Crawler.STATUS_ERROR_BAD_URL) {
             templateValues.put("run_status", "<div class='alert alert-error'>Bad URL!</div>");
+        } else if (addStatus == Crawler.STATUS_ERROR_UNKNOWN_HOST) {
+            templateValues.put("run_status", "<div class='alert alert-error'>Unknown host!</div>");
         } else {
             templateValues.put("run_status", "<div class='alert alert-error'>Crawler failed to start</div>");
         }

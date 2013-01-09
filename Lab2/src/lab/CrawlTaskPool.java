@@ -61,6 +61,8 @@ public class CrawlTaskPool {
                 } else {
                     CrawlRequest requestToReturn = requests.pop();
                     requestToReturn.progress = CrawlRequest.PROGRESS_WORKING;
+                    taskMutex.register();
+                    requests.notifyAll();
 					return requestToReturn;
 				}
 			}

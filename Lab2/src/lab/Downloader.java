@@ -1,6 +1,7 @@
 package lab;
 
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -36,20 +37,23 @@ public class Downloader implements Runnable {
                 }
 
                 long startTime = System.currentTimeMillis();
-                byte[] data = downloadUrl(toDownload.url);
+                long length = urlDataLength(toDownload.url);
                 long endTime = System.currentTimeMillis();
+                byte[] data = null;
 
-                toDownload.rtt = endTime - startTime;
+                if (length == 0) {
+                    data = downloadUrl(toDownload.url);
 
-                if (data == null) {
-                    Logger.error("Couldn't download resource " + toDownload.url);
-                    continue;
+                    if (null == data) {
+                        Logger.error("Couldn't download resource " + toDownload.url);
+                        continue;
+                    }
                 }
+
 
                 Resource resource = new Resource();
                 resource.url = toDownload.url;
-
-
+                resource.rtt = endTime - startTime;
                 resource.body = data;
                 resource.length = data.length;
 
@@ -67,6 +71,19 @@ public class Downloader implements Runnable {
                 e.printStackTrace();
                 return;
             }
+        }
+    }
+
+    public static long urlDataLength(URL url){
+        try {
+            HttpURLConnection.setFollowRedirects(true);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("HEAD");
+            return Long.parseLong(con.getHeaderField("content-length"));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return 0;
         }
     }
 

@@ -12,10 +12,10 @@ import java.util.Set;
  * To change this template use File | Settings | File Templates.
  */
 public class CrawlRequest {
-    public static int PROGRESS_NEW = 0;
-    public static int PROGRESS_WAITING_TO_START = 1;
-    public static int PROGRESS_WORKING = 2;
-    public static int PROGRESS_FINISHED = 3;
+    public static final int PROGRESS_NEW = 0;
+    public static final int PROGRESS_WAITING_TO_START = 1;
+    public static final int PROGRESS_WORKING = 2;
+    public static final int PROGRESS_FINISHED = 3;
 
     public URL urlToCrawl;
     public boolean ignoreRobots;

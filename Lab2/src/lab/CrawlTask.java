@@ -45,8 +45,6 @@ public class CrawlTask implements Runnable {
 
     private void processTask(CrawlRequest task)
     {
-        parent.taskMutex.register();
-
         if (task.ignoreRobots)
         {
             robot = new RobotsParser("");

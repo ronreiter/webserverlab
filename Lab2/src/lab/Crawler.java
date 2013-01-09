@@ -21,7 +21,8 @@ public class Crawler {
     public static final int ADD_STATUS_SUCCESS = 1;
     public static final int ADD_STATUS_RUNNING = 2;
     public static final int STATUS_ERROR_BAD_URL = 3;
-    public static final int STATUS_ERROR_UNKNOWN = 4;
+    public static final int STATUS_ERROR_UNKNOWN_HOST = 4;
+    public static final int STATUS_ERROR_UNKNOWN = 5;
 
     List<CrawlRequest> requests;
 
@@ -40,14 +41,14 @@ public class Crawler {
         try {
             URL url;
             // Check that the URL is valid
-            if (!urlToAdd.contains("://"))
+            if (!urlToAdd.contains("://")) {
                 url = new URL("http://" + urlToAdd);
-            else url = new URL(urlToAdd);
-
+            } else {
+                url = new URL(urlToAdd);
+            }
 
             // make sure the domain is valid
             InetAddress.getByName(url.getHost());
-
 
             // Create the new Task
             if (crawlTaskPool.taskMutex.count() == ConfigManager.getInstance().getMaxCrawlerThreads())
@@ -68,7 +69,7 @@ public class Crawler {
         } catch (UnknownHostException e) {
             Logger.error("Failed parsing requested URL: " + urlToAdd);
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            return STATUS_ERROR_BAD_URL;
+            return STATUS_ERROR_UNKNOWN_HOST;
         } catch (MalformedURLException e) {
             return STATUS_ERROR_BAD_URL;
         }
