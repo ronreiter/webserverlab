@@ -13,7 +13,11 @@ public class ReportFileHandler extends FileRequestHandler {
             response.setStatus(403);
             return;
         }
-        if (!request.getHeaders().get("referer").endsWith("/completed")) {
+        if (!request.getHeaders().get("referer").contains("/completed")) {
+            response.setStatus(403);
+            return;
+        }
+        if (!request.getHeaders().get("referer").contains("/reports")) {
             response.setStatus(403);
             return;
         }
