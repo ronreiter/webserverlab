@@ -118,7 +118,7 @@ public class Downloader implements Runnable {
 
     // unit test
     public static void main(String[] args) throws MalformedURLException, InterruptedException {
-        ResourceQueue queue = new ResourceQueue(1);
+        ResourceQueue queue = new ResourceQueue();
 
         Resource res = new Resource();
         res.url = new URL("http://www.ynet.co.il");

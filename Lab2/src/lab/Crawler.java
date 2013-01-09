@@ -48,6 +48,7 @@ public class Crawler {
             }
 
             // make sure the domain is valid
+            Logger.debug("Resolving " + url.getHost());
             InetAddress.getByName(url.getHost());
 
             // Create the new Task

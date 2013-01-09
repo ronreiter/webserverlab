@@ -7,13 +7,11 @@ public class ResourceQueue {
     private final LinkedList<Resource> downloadTasks;
     private boolean shutdown = false;
     public Mutex resourceMutex;
-    private int maxThreads = 0;
     private Object lock = null;
 
-	public ResourceQueue(int maxThreads) {
+	public ResourceQueue() {
 		this.analyzeTasks = new LinkedList<Resource>();
         this.downloadTasks = new LinkedList<Resource>();
-        this.maxThreads = maxThreads;
         this.resourceMutex = new Mutex();
         this.lock = new Object();
 	}
@@ -21,7 +19,7 @@ public class ResourceQueue {
     public void waitUntilFinished() {
         synchronized (lock) {
             while (true) {
-                if (maxThreads == resourceMutex.count()) {
+                if (0 == resourceMutex.count() && analyzeTasks.size() == 0 && downloadTasks.size() == 0) {
                     return;
                 }
                 try {

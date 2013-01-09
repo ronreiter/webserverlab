@@ -1,6 +1,8 @@
 package lab;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -136,7 +138,17 @@ public class CrawlerRequestHandler extends RequestHandler {
        		}
         }
 
-        addStatus = crawler.add(request.parameters.get("domain"), request.parameters.containsKey("robots") && request.parameters.get("robots").equals("checked"));
+        String host = null;
+        try {
+            host = URLDecoder.decode(request.parameters.get("domain"), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        if (host != null) {
+            addStatus = crawler.add(host, request.parameters.containsKey("robots") && request.parameters.get("robots").equals("checked"));
+        }
+
         Logger.info("Adding task to crawler - result: " + addStatus);
         if (addStatus == Crawler.ADD_STATUS_SUCCESS) {
             templateValues.put("run_status", "<div class='alert alert-success'>Crawler started successfully</div>");

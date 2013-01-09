@@ -24,6 +24,12 @@
             line-height: 20px;
         }
 
+        .brand img {
+            height: 28px;
+            margin-top: -10px;
+            margin-bottom: -5px;
+        }
+
     </style>
     <script src="/js/jquery.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
@@ -34,7 +40,7 @@
     <div class="navbar navbar-static-top">
         <div class="navbar-inner">
             <div class="container">
-                <a class="brand" href="/"><div class="icon-cloud-download"></div> Crawler</a>
+                <a class="brand" href="/"><!--<div class="icon-cloud-download"></div>--><img src="/img/crawler.png"/> Crawler</a>
                 <ul class="nav">
                     <li class="active"><a href="/">Home</a></li>
                     <li><a href="/completed">Completed Job Reports</a></li>
@@ -54,7 +60,7 @@
                     <div class="control-group">
                         <label class="control-label">Domain to crawl</label>
                         <div class="controls">
-                            <input class="input-large" type="text" name="domain" id="domain" placeholder="Example: www.google.com"/>
+                            <input class="input-large" type="text" name="domain" id="domain" placeholder="Example: localhost:8080" value="localhost:8080"/>
                         </div>
 
                     </div>

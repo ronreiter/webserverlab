@@ -17,10 +17,7 @@ public class CrawlTask implements Runnable {
     public CrawlRequest currentRequest;
     Set<String> downloaded;
 
-    // create the resource queue with a barrier - when everyone waits for something to do, we know we need
-    // to stop (which is why we limit the resource queue to the number of total threads)
-    ResourceQueue queue = new ResourceQueue(
-            ConfigManager.getInstance().getMaxAnalyzers() + ConfigManager.getInstance().getMaxDownloaders());
+    ResourceQueue queue = new ResourceQueue();
 
     public CrawlTask(CrawlTaskPool parent) {
         this.parent = parent;

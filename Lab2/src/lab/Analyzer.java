@@ -142,7 +142,7 @@ public class Analyzer implements Runnable {
 
     // unit test
     public static void main(String[] args) throws MalformedURLException, InterruptedException {
-        ResourceQueue queue = new ResourceQueue(1);
+        ResourceQueue queue = new ResourceQueue();
         Resource res = new Resource();
         res.body = "<a href='bar.html'>blat</a> blat <img src='http://www.google.com/image.png'/>".getBytes();
         res.url = new URL("http://www.example.com/foo");
