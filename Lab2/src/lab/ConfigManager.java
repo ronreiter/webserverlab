@@ -94,6 +94,8 @@ public class ConfigManager {
             configuration.put(SITES_ROOT_DIRECTORY_KEY, DEFAULT_SITES_ROOT_DIRECTORY_VALUE);
             configuration.put(MAX_THREADS_KEY, Integer.toString(DEFAULT_MAX_THREADS_VALUE));
             configuration.put(MAX_CRAWLER_THREADS_KEY, Integer.toString(DEFAULT_MAX_CRAWLER_THREADS_VALUE));
+            configuration.put(MAX_ANALYZERS_KEY, Integer.toString(DEFAULT_MAX_ANALYZERS_VALUE));
+            configuration.put(MAX_DOWNLOADERS_KEY, Integer.toString(DEFAULT_MAX_DOWNLOADERS_VALUE));
             configuration.put(FILE_DEBUG_LEVEL_KEY, Integer.toString(DEFAULT_FILE_DEBUG_LEVEL_VALUE));
             configuration.put(SCREEN_DEBUG_LEVEL_KEY, Integer.toString(DEFAULT_SCREEN_DEBUG_LEVEL_VALUE));
             configuration.put(MANAGER_PASSWORD_KEY, DEFAULT_MANAGER_PASSWORD);

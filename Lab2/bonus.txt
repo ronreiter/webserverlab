@@ -43,9 +43,9 @@ Bonuses
 =======
 
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-HTTP Web Server Bonuses (from lab1)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+HTTP Web Server Bonuses (from lab1) - used and enhanced by lab2(!!)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 1. HTTP/1.1 support - both Host header support and connection keep-alive support
 
@@ -57,25 +57,8 @@ HTTP Web Server Bonuses (from lab1)
 3. Thread pool 
 	- in order to be efficient we have a thread pool that dequeues requests. this way threads are always up and ready to go.
 
-4. Remote Configuration 
-	- the server can be configured from remote. In order to configure it you must include the password 
-	default password is 'weakpass'. 
-	add the 'pass' parameter in the get/post request (e.g. pass=weakpass) in order to be able to configure.
-	you can configure the following paramters:
 
-		Configuration		paramter		sample value
-		============================================================
-		Server Port 		port			8080
-		Manager Password 	managerPassword		weakpass
-		Virtual servers 	multipleSites		yes
-		Maximum Threads		maxThreads		10
-		Default Page		defaultPage		index.html
-		Server root directory	root			root
-
-	sample request: http://localhost:8080/serverConfig?pass=weakpass&multipleSites=yes
-	The sample request will enable bonus #2 :)
-
-5. Logger with 5 logging levels
+4. Logger with 5 logging levels
 	The logger lets you log anything you wish with the relevant level (error, warning, etc). 
 	The logger will print on the screen everything over a certain log level (according to what's configured in the
 	config.ini file as screenDebugLevel)
@@ -86,11 +69,20 @@ Web Crawler bonuses
 ~~~~~~~~~~~~~~~~~~~
 
 1. Crawler thread pool - allows executing more than one crawl job at a time. Each crawler has its own analyzer and
-downloader thread pools. Number of crawler threads is also configurable through the configuration.
+    downloader thread pools. Number of crawler threads is also configurable through the configuration.
 
 2. Twitter bootstrap user interface
 
 3. Real-time crawler status using AJAX polling. The server has a JSON endpoint which returns all server tasks.
     Using jQuery and Handlebars.js templating, the web client actively polls the server every second, and renders
     the status to the user by parsing the JSON data.
+
+4. Analyzers and Downloaders thread pools - load all threads in advance and keep work status with a global queue mutex.
+    Makes a more efficient Spiderman as it doesn't need to handle running the threads per requested crawl task
+
+5. Self generating ConfigManager - if the config file is accidentally deleted, the server will automatically generate a
+    replicated copy of the default configuration (as required by the lab document)
+
+6. Cool crawler theme & name - we named our robot Spiderman and preseved a coherent spiderman theme for our crawler. Cool haa? ;)
+
 

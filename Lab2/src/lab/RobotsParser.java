@@ -36,10 +36,10 @@ public class RobotsParser {
                 }
             }
             if (shouldParse && line.startsWith("Disallow:")) {
-                Logger.debug("ROBOT: Adding " + line.trim() + " to disallowed list");
+                Logger.debug("ROBOT: Adding " + line.split(":")[1].trim() + " to disallowed list");
                 disallowedPaths.add(line.split(":")[1].trim());
             } else if (shouldParse && line.startsWith("Allow:")) {
-                Logger.debug("ROBOT: Adding " + line + " to allowed list");
+                Logger.debug("ROBOT: Adding " + line.split(":")[1].trim() + " to allowed list");
                 allowedPaths.add(line.split(":")[1].trim());
             }
         }
@@ -53,14 +53,14 @@ public class RobotsParser {
 
         // First check if the URL has an "Allow:" entry - if so then permit
         for (String path: allowedPaths) {
-            if (urlPath.startsWith(path)) {
+            if (urlPath.matches(path)) {
                 return true;
             }
         }
 
         // If it's not in the Allowed then check if it's Disallowed. if so block.
         for (String path : disallowedPaths) {
-            if (urlPath.startsWith(path)) {
+            if (urlPath.matches(path)) {
                     return false;
             }
         }
