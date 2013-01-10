@@ -71,9 +71,9 @@ public class CrawlTask implements Runnable {
         Resource crawlUrlAsResource = new Resource();
         try {
             if (task.urlToCrawl.getPort() == -1) {
-                crawlUrlAsResource.url = new URL(task.urlToCrawl.getProtocol() + "://" + task.urlToCrawl.getHost());
+                crawlUrlAsResource.url = new URL(task.urlToCrawl.getProtocol() + "://" + task.urlToCrawl.getHost() + "/");
             } else {
-                crawlUrlAsResource.url = new URL(task.urlToCrawl.getProtocol() + "://" + task.urlToCrawl.getHost() + ":" + task.urlToCrawl.getPort());
+                crawlUrlAsResource.url = new URL(task.urlToCrawl.getProtocol() + "://" + task.urlToCrawl.getHost() + ":" + task.urlToCrawl.getPort() + "/");
             }
 
         } catch (MalformedURLException e) {

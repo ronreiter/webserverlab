@@ -26,6 +26,9 @@ public class ConfigManager {
     
     public static String MANAGER_PASSWORD_KEY = "managerPassword";
     public static String DEFAULT_MANAGER_PASSWORD = "weakpass";
+
+    public static String ROBOT_NAME_KEY = "robotName";
+    public static String DEFAULT_ROBOT_NAME = "Spiderman";
     
     public static String MAX_THREADS_KEY = "maxThreads";
     public static int DEFAULT_MAX_THREADS_VALUE = 10;
@@ -94,6 +97,7 @@ public class ConfigManager {
             configuration.put(FILE_DEBUG_LEVEL_KEY, Integer.toString(DEFAULT_FILE_DEBUG_LEVEL_VALUE));
             configuration.put(SCREEN_DEBUG_LEVEL_KEY, Integer.toString(DEFAULT_SCREEN_DEBUG_LEVEL_VALUE));
             configuration.put(MANAGER_PASSWORD_KEY, DEFAULT_MANAGER_PASSWORD);
+            configuration.put(ROBOT_NAME_KEY, DEFAULT_ROBOT_NAME);
 
             saveConfiguration();
         }
@@ -194,12 +198,22 @@ public class ConfigManager {
 	{
 		return getStringParameter(MANAGER_PASSWORD_KEY);
 	}
-	
+
 	public void setManagerPassword(String managerPassword)
 	{
 		setStringParameter(MANAGER_PASSWORD_KEY, managerPassword);
 	}
-	
+
+    public String getRobotName()
+    {
+        return getStringParameter(ROBOT_NAME_KEY);
+    }
+
+    public void setRobotName(String robotName)
+    {
+        setStringParameter(ROBOT_NAME_KEY, robotName);
+    }
+
     public int getFileDebugLevel() {
         return getIntParameter(FILE_DEBUG_LEVEL_KEY);
     }
