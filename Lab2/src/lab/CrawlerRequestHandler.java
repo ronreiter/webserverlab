@@ -106,12 +106,8 @@ public class CrawlerRequestHandler extends RequestHandler {
         }
     }
 
-    public void get()
-    {
-        Map<String, Object> templateValues = new HashMap<String, Object>();
+    public String getCompletedJobsFileTable() {
         StringBuilder fileList = new StringBuilder();
-
-        setCrawlerStatus(templateValues);
 
         File folder = new File(new File("root"), "reports");
 
@@ -123,7 +119,17 @@ public class CrawlerRequestHandler extends RequestHandler {
             fileList.append("<tr><td><a href='/reports/" + file.getName() + "'>" + file.getName() + "</a></td></tr>");
         }
 
-        templateValues.put("files", fileList.toString());
+        return fileList.toString();
+
+    }
+
+    public void get()
+    {
+        Map<String, Object> templateValues = new HashMap<String, Object>();
+        setCrawlerStatus(templateValues);
+
+
+        templateValues.put("files", getCompletedJobsFileTable());
         templateValues.put("run_status", "");
         templateValues.put("crawl_status", getCrawlStatus());
 
@@ -197,6 +203,7 @@ public class CrawlerRequestHandler extends RequestHandler {
 
         setCrawlerStatus(templateValues);
 
+        templateValues.put("files", getCompletedJobsFileTable());
         templateValues.put("crawl_status", getCrawlStatus());
 
         renderTemplate(CRAWLER_TEMPLATE, templateValues);

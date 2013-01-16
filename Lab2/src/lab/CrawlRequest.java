@@ -45,11 +45,17 @@ public class CrawlRequest {
         // calculate the new average response time and add a new link
         averageRTT = (averageRTT * totalLinks + resource.rtt) / (totalLinks + 1);
 
+        Logger.debug("Adding statistic to resource type " + resource.type + " tag: " + resource.tag + " url " + resource.url);
+
+        // count the links - but only ones with "a" tags
+        if (resource.tag != null && resource.tag.equals("a")) {
+            totalLinks++;
+        }
+
         switch(resource.type) {
             case Resource.TYPE_DOCUMENT:
                 totalDocuments += 1;
                 totalDocumentsBytes += resource.length;
-                totalLinks += 1;
 
                 break;
             case Resource.TYPE_IMAGE:
@@ -62,13 +68,11 @@ public class CrawlRequest {
             case Resource.TYPE_VIDEO:
                 totalVideos += 1;
                 totalVideosBytes += resource.length;
-                totalLinks += 1;
 
                 break;
             case Resource.TYPE_PAGE:
                 totalPages += 1;
                 totalPagesBytes += resource.length;
-                totalLinks += 1;
 
                 break;
         }

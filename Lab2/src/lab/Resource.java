@@ -13,4 +13,5 @@ public class Resource {
     public int type;
     public long length;
     public float rtt;
+    public String tag;
 }

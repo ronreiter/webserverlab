@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,9 +39,6 @@ public class Analyzer implements Runnable {
                 // parse the URL and get the type (can also be done through the headers of the request
                 toAnalyze.type = getURLType(toAnalyze.url);
 
-                // add the request to the crawl statistics page
-                parent.currentRequest.addStat(toAnalyze);
-
                 // done analyzing stuff which isn't a page
                 if (toAnalyze.type != Resource.TYPE_PAGE) {
                     continue;
@@ -50,16 +49,15 @@ public class Analyzer implements Runnable {
                 }
 
                 // get the links to parse from the body
-                List<URL> urls = parseLinks(toAnalyze.url, new String(toAnalyze.body, "UTF-8"));
+                Map<URL, String> urls = parseLinks(toAnalyze.url, new String(toAnalyze.body, "UTF-8"));
 
                 if (urls == null) {
                     continue;
                 }
-
                 Logger.info("Number of links parsed from url " + urls.toString() + " is " + urls.size());
 
                 // for each link, add it to the download queue if needed
-                for (URL url : urls) {
+                for (URL url : urls.keySet()) {
                     if (url == null) {
                         continue;
                     }
@@ -90,8 +88,12 @@ public class Analyzer implements Runnable {
                     Resource resource = new Resource();
                     resource.url = url;
                     resource.type = getURLType(url);
+                    resource.tag = urls.get(url);
 
-                    Logger.info("Adding URL to download queue: " + resource.url + " type: " + resource.type);
+                    // add the request to the crawl statistics page
+                    parent.currentRequest.addStat(resource);
+
+                    Logger.info("Adding URL to download queue: " + resource.url + " type: " + resource.type + " tag: " + resource.tag);
 
                     // enqueue it to the download queue (this is done only to pages)
                     queue.enqueueToDownload(resource);
@@ -109,18 +111,18 @@ public class Analyzer implements Runnable {
         }
     }
 
-    public List<URL> parseLinks(URL baseUrl, String html) {
-        List<URL> links = new LinkedList<URL>();
+    public Map<URL, String> parseLinks(URL baseUrl, String html) {
+        Map<URL, String> links = new HashMap<URL, String>();
 
         // simple regular expressions to match a tags and img tags
-        Pattern linkParser = Pattern.compile("<a.*?href\\s?=\\s?['\"](.*?)['\"].*?>");
-        Pattern imgParser = Pattern.compile("<img.*?src\\s?=\\s?['\"](.*?)['\"].*?>");
+        Pattern linkParser = Pattern.compile("<a.*?href\\s?=\\s?['\"](.*?)['\"].*?>", Pattern.CASE_INSENSITIVE);
+        Pattern imgParser = Pattern.compile("<img.*?src\\s?=\\s?['\"](.*?)['\"].*?>", Pattern.CASE_INSENSITIVE);
 
         // insert image tags to the result list
         Matcher imgMatcher = imgParser.matcher(html);
         while (imgMatcher.find()) {
             try {
-                links.add(relativeToAbsoluteLink(baseUrl, imgMatcher.group(1)));
+                links.put(relativeToAbsoluteLink(baseUrl, imgMatcher.group(1)), "img");
             } catch (MalformedURLException e) {
                 Logger.debug("malformed image: " + imgMatcher.group(1));
             }
@@ -130,7 +132,7 @@ public class Analyzer implements Runnable {
         Matcher linkMatcher = linkParser.matcher(html);
         while (linkMatcher.find()) {
             try {
-                links.add(relativeToAbsoluteLink(baseUrl, linkMatcher.group(1)));
+                links.put(relativeToAbsoluteLink(baseUrl, linkMatcher.group(1)), "a");
             } catch (MalformedURLException e) {
                 Logger.debug("malformed URL: " + linkMatcher.group(1));
             }
