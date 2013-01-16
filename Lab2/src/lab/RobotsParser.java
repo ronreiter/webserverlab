@@ -35,10 +35,17 @@ public class RobotsParser {
                     shouldParse = false;
                 }
             }
+
+
+
             if (shouldParse && line.startsWith("Disallow:")) {
+                String original = line.split(":")[1].trim();
+                String regex = original.replace("?", ".?").replace("*", ".*?");
                 Logger.debug("ROBOT: Adding " + line.split(":")[1].trim() + " to disallowed list");
                 disallowedPaths.add(line.split(":")[1].trim());
             } else if (shouldParse && line.startsWith("Allow:")) {
+                String original = line.split(":")[1].trim();
+                String regex = original.replace("?", ".?").replace("*", ".*?");
                 Logger.debug("ROBOT: Adding " + line.split(":")[1].trim() + " to allowed list");
                 allowedPaths.add(line.split(":")[1].trim());
             }
