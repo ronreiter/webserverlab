@@ -43,25 +43,33 @@ public class CrawlRequest {
         domainsConnected.add(resource.url.getHost());
 
         // calculate the new average response time and add a new link
-        totalLinks += 1;
         averageRTT = (averageRTT * totalLinks + resource.rtt) / (totalLinks + 1);
 
         switch(resource.type) {
             case Resource.TYPE_DOCUMENT:
                 totalDocuments += 1;
                 totalDocumentsBytes += resource.length;
+                totalLinks += 1;
+
                 break;
             case Resource.TYPE_IMAGE:
                 totalImages += 1;
                 totalImagesBytes += resource.length;
+
+                // the fact that we don't count images as links here
+                // is because we don't consider "a" links to images as links.
                 break;
             case Resource.TYPE_VIDEO:
                 totalVideos += 1;
                 totalVideosBytes += resource.length;
+                totalLinks += 1;
+
                 break;
             case Resource.TYPE_PAGE:
                 totalPages += 1;
                 totalPagesBytes += resource.length;
+                totalLinks += 1;
+
                 break;
         }
 

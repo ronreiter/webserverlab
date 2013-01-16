@@ -13,7 +13,8 @@ import org.json.simple.JSONObject;
 public class CrawlerRequestHandler extends RequestHandler {
 	public static final String CRAWLER_TEMPLATE = "templates/index.html";
     private Crawler crawler;
-	public CrawlerRequestHandler() {
+
+    public CrawlerRequestHandler() {
         crawler = Crawler.getInstance();
     }
 
@@ -44,7 +45,6 @@ public class CrawlerRequestHandler extends RequestHandler {
 
     public static String generateTemplateWithResults(CrawlRequest crawlRequest, String templateFileName) throws IOException {
         StringBuilder domainListBuilder = new StringBuilder();
-
         for (String domain : crawlRequest.domainsConnected) {
             String crawledDomainReport = getCrawledDomainReport(domain);
             if (crawledDomainReport != null) {
@@ -109,8 +109,21 @@ public class CrawlerRequestHandler extends RequestHandler {
     public void get()
     {
         Map<String, Object> templateValues = new HashMap<String, Object>();
+        StringBuilder fileList = new StringBuilder();
+
         setCrawlerStatus(templateValues);
 
+        File folder = new File(new File("root"), "reports");
+
+        if (!folder.exists()) {
+            folder.mkdir();
+        }
+
+        for (File file : folder.listFiles()) {
+            fileList.append("<tr><td><a href='/reports/" + file.getName() + "'>" + file.getName() + "</a></td></tr>");
+        }
+
+        templateValues.put("files", fileList.toString());
         templateValues.put("run_status", "");
         templateValues.put("crawl_status", getCrawlStatus());
 

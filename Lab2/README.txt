@@ -30,7 +30,7 @@ is active, it serves requests on port 80 using the WebServer module, which passe
 through a queue. The threads then use the RequestRouter and the relevant class according to the path and domain
 to handle the request, and return an HttpResponse to the user. The CrawlerRequestHandler handles the main
 user interaction of the application - which includes the statistics window on the currently running crawl requests,
-and the crawl request addition form. The completed job reports page shows the list of crawl requests that have been
+and the crawl request addition form. The main page also shows the list of crawl requests that have been
 completed (and also stores them under the root/reports directory). When viewing the reports, one must access them
 only through the completed reports page or through links connecting between the reports themselves.
 
