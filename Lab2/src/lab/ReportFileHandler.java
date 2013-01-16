@@ -26,7 +26,7 @@ public class ReportFileHandler extends FileRequestHandler {
             return;
         }
 
-        if (!referrer.getPath().startsWith("/completed") && !referrer.getPath().startsWith("/reports")) {
+        if (!referrer.getPath().equals("/") && !referrer.getPath().startsWith("/reports")) {
             Logger.info("Someone tried to access a report from a wrong referrer!");
             response.setStatus(403);
             return;
