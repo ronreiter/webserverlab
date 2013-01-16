@@ -41,13 +41,13 @@ public class RobotsParser {
             if (shouldParse && line.startsWith("Disallow:")) {
                 String original = line.split(":")[1].trim();
                 String regex = original.replace("?", ".?").replace("*", ".*?");
-                Logger.debug("ROBOT: Adding " + line.split(":")[1].trim() + " to disallowed list");
-                disallowedPaths.add(line.split(":")[1].trim());
+                Logger.debug("ROBOT: Adding " + regex + " to disallowed list");
+                disallowedPaths.add(regex);
             } else if (shouldParse && line.startsWith("Allow:")) {
                 String original = line.split(":")[1].trim();
                 String regex = original.replace("?", ".?").replace("*", ".*?");
-                Logger.debug("ROBOT: Adding " + line.split(":")[1].trim() + " to allowed list");
-                allowedPaths.add(line.split(":")[1].trim());
+                Logger.debug("ROBOT: Adding " + regex + " to allowed list");
+                allowedPaths.add(regex);
             }
         }
     }
