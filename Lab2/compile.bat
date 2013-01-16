@@ -1,3 +1,5 @@
+del /Q /F /S bin
+del /Q /F /S out
 md bin
 md bin\lab
 cd .\src\lab\

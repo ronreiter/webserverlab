@@ -1,3 +1,4 @@
-User-agent: *
+User-agent: Sp?der*
 Disallow: /img/?ra*.p?g
-Allow: /img
+Disallow: /*local*
+Allow: /img*

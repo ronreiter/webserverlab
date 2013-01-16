@@ -25,8 +25,9 @@ public class RobotsParser {
         for (String line : robotsFile.split("\n")) {
             // use the robot data for all robots and for our robot specifically
             if (line.startsWith("User-agent:")) {
-                if (line.split(":")[1].trim().compareTo("*") == 0 ||
-                    line.split(":")[1].trim().compareTo(ConfigManager.getInstance().getRobotName()) == 0) {
+                String original = line.split(":")[1].trim();
+                String regex = original.replace("?", ".?").replace("*", ".*?");
+                if (ConfigManager.getInstance().getRobotName().matches(regex)) {
                     Logger.debug("Robot found matching User-Agent: " + line.split(":")[1].trim());
                     shouldParse = true;
                 } else
