@@ -19,13 +19,26 @@ public class RobotsParser {
     public RobotsParser(String robotsFile) {
         disallowedPaths = new LinkedList<String>();
         allowedPaths = new LinkedList<String>();
+        boolean shouldParse = true;
 
         // parse robots file:
         for (String line : robotsFile.split("\n")) {
-            if (line.startsWith("Disallow:")) {
+            // use the robot data for all robots and for our robot specifically
+            if (line.startsWith("User-agent:")) {
+                if (line.split(":")[1].trim().compareTo("*") == 0 ||
+                    line.split(":")[1].trim().compareTo(ConfigManager.getInstance().getRobotName()) == 0) {
+                    Logger.debug("Robot found matching User-Agent: " + line.split(":")[1].trim());
+                    shouldParse = true;
+                } else
+                {
+                    Logger.debug("Robot found un-matching User-Agent: " + line.split(":")[1].trim() + ". Which is not " + ConfigManager.getInstance().getRobotName());
+                    shouldParse = false;
+                }
+            }
+            if (shouldParse && line.startsWith("Disallow:")) {
                 Logger.debug("ROBOT: Adding " + line.trim() + " to disallowed list");
                 disallowedPaths.add(line.split(":")[1].trim());
-            } else if (line.startsWith("Allow:")) {
+            } else if (shouldParse && line.startsWith("Allow:")) {
                 Logger.debug("ROBOT: Adding " + line + " to allowed list");
                 allowedPaths.add(line.split(":")[1].trim());
             }
@@ -33,16 +46,21 @@ public class RobotsParser {
     }
 
     public boolean checkURLAllowed(URL url) {
+
+        String urlPath = url.getPath();
+        // handle root directory disallowed:
+        if (urlPath == "") urlPath = "/";
+
         // First check if the URL has an "Allow:" entry - if so then permit
         for (String path: allowedPaths) {
-            if (url.getPath().startsWith(path)) {
+            if (urlPath.startsWith(path)) {
                 return true;
             }
         }
 
         // If it's not in the Allowed then check if it's Disallowed. if so block.
         for (String path : disallowedPaths) {
-            if (url.getPath().startsWith(path)) {
+            if (urlPath.startsWith(path)) {
                     return false;
             }
         }

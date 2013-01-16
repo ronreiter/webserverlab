@@ -179,7 +179,7 @@ public class CrawlerRequestHandler extends RequestHandler {
         }
 
         if (host != null) {
-            addStatus = crawler.add(host, request.parameters.containsKey("robots") && request.parameters.get("robots") != null);
+            addStatus = crawler.add(host, request.parameters.containsKey("robots") && (request.parameters.get("robots") != null));
         }
 
         Logger.info("Adding task to crawler - result: " + addStatus);
